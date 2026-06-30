@@ -14,20 +14,19 @@ import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
-const publicNavLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/development", label: "Development" },
-  { href: "/download", label: "Download" },
+const privateNavLinks = [
   { href: "/dashboard", label: "Dashboard" },
-] as const;
-
-const authLinks = [
-  { href: "/auth/signin", label: "Sign in" },
-  { href: "/auth/signup", label: "Sign up" },
+  { href: "/clients", label: "Clients" },
+  { href: "/invoices", label: "Invoices" },
+  { href: "/business", label: "Business" },
+  { href: "/products", label: "Products" },
+  { href: "/products/family/create", label: "Families" },
+  { href: "/taxrate", label: "Tax Rate" },
+  { href: "/settings", label: "Settings" },
 ] as const;
 
 const NavLink = ({
@@ -42,14 +41,14 @@ const NavLink = ({
   className?: string;
 }) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Link
       href={href as never}
       onClick={onClick}
       className={cn(
-        "text-sm font-medium transition-colors hover:text-primary",
+        "hover:text-primary text-sm font-medium transition-colors",
         isActive ? "text-primary" : "text-muted-foreground",
         className,
       )}>
@@ -58,19 +57,31 @@ const NavLink = ({
   );
 };
 
-const Header = () => {
+const PrivateHeader = () => {
   const [open, setOpen] = useState(false);
-  const { data: session } = authClient.useSession();
+  const router = useRouter();
 
   const closeMenu = () => setOpen(false);
 
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success("Signed out successfully");
+          router.push("/" as never);
+        },
+      },
+    });
+    closeMenu();
+  };
+
   return (
     <header
-      className="fixed top-0 right-0 left-0 z-50 border-b bg-background/95 shadow backdrop-blur supports-backdrop-filter:bg-background/80"
-      aria-label="app-header">
+      className="bg-background/95 supports-backdrop-filter:bg-background/80 fixed top-0 right-0 left-0 z-50 border-b shadow backdrop-blur"
+      aria-label="dashboard-header">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
         <Link
-          href={"/" as never}
+          href={"/dashboard" as never}
           className="shrink-0">
           <span className="font-heading text-xl font-semibold sm:text-2xl">
             RocketInvoice
@@ -79,8 +90,8 @@ const Header = () => {
 
         <nav
           className="hidden items-center gap-5 lg:flex"
-          aria-label="Main navigation">
-          {publicNavLinks.map((link) => (
+          aria-label="Dashboard navigation">
+          {privateNavLinks.map((link) => (
             <NavLink
               key={link.href}
               href={link.href}
@@ -88,17 +99,12 @@ const Header = () => {
             />
           ))}
 
-          {!session && (
-            <>
-              {authLinks.map((link) => (
-                <NavLink
-                  key={link.href}
-                  href={link.href}
-                  label={link.label}
-                />
-              ))}
-            </>
-          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}>
+            Sign out
+          </Button>
 
           <ThemeToggleButton />
         </nav>
@@ -123,13 +129,13 @@ const Header = () => {
               side="right"
               className="w-full max-w-xs">
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle>Dashboard</SheetTitle>
               </SheetHeader>
 
               <nav
                 className="flex flex-col gap-4 px-4"
-                aria-label="Mobile navigation">
-                {publicNavLinks.map((link) => (
+                aria-label="Mobile dashboard navigation">
+                {privateNavLinks.map((link) => (
                   <SheetClose
                     key={link.href}
                     render={
@@ -143,20 +149,12 @@ const Header = () => {
                   />
                 ))}
 
-                {!session &&
-                  authLinks.map((link) => (
-                    <SheetClose
-                      key={link.href}
-                      render={
-                        <NavLink
-                          href={link.href}
-                          label={link.label}
-                          onClick={closeMenu}
-                          className="text-base"
-                        />
-                      }
-                    />
-                  ))}
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleSignOut}>
+                  Sign out
+                </Button>
               </nav>
             </SheetContent>
           </Sheet>
@@ -166,4 +164,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default PrivateHeader;

@@ -10,3 +10,220 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model User {
+  id              String     @id
+  name            String
+  email           String
+  emailVerified   Boolean    @default(false)
+  image           String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  username        String?
+  displayUsername String?
+  role            String?
+  banned          Boolean?   @default(false)
+  banReason       String?
+  banExpires      DateTime?
+  sessions        Session[]
+  accounts        Account[]
+  businesses      Business[]
+
+  @@unique([email])
+  @@unique([username])
+  @@map("user")
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model RateLimit {
+  id          String @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
+}
+
+model Business {
+  id                 String          @id @default(cuid())
+  name               String
+  address            String
+  contactInformation String
+  userId             String
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products           Product[]
+  productFamilies    ProductFamily[]
+  clients            Client[]
+  invoices           Invoice[]
+  taxRates           TaxRate[]
+  deletedAt          DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([userId])
+  @@map("business")
+}
+
+model TaxRate {
+  id         String    @id @default(cuid())
+  name       String
+  percent    Decimal
+  businessId String
+  business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([businessId])
+  @@map("tax_rate")
+}
+
+model ProductFamily {
+  id         String    @id @default(cuid())
+  name       String
+  businessId String
+  business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  products   Product[]
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([businessId])
+  @@map("product_family")
+}
+
+model Client {
+  id                 String    @id @default(cuid())
+  name               String
+  address            String
+  contactInformation String
+  gender             String?
+  birthdate          DateTime?
+  businessId         String
+  business           Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  invoices           Invoice[]
+  deletedAt          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([businessId])
+  @@map("client")
+}
+
+model Invoice {
+  id                String     @id @default(cuid())
+  invoiceDate       DateTime
+  status            String
+  paymentMethod     String
+  clientId          String?
+  client            Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientName        String
+  clientAddress     String
+  clientContactInformation String
+  businessId        String
+  business          Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  globalDiscount    Decimal    @default(0)
+  subtotal          Decimal
+  itemDiscount      Decimal
+  taxTotal          Decimal
+  total             Decimal
+  invoiceItems      InvoiceItem[]
+  deletedAt         DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([businessId])
+  @@index([clientId])
+  @@map("invoice")
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name        String
+  quantity    Decimal
+  price       Decimal
+  discount    Decimal
+  taxRate     Decimal
+  lineTotal   Decimal
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([invoiceId])
+  @@index([productId])
+  @@map("invoice_item")
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  description   String?
+  taxRate       Decimal
+  price         Decimal
+  family        String
+  familyId      String?
+  productFamily ProductFamily? @relation(fields: [familyId], references: [id], onDelete: SetNull)
+  businessId    String
+  business      Business       @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  deletedAt     DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  invoiceItems  InvoiceItem[]
+
+  @@index([businessId])
+  @@index([familyId])
+  @@map("product")
+}

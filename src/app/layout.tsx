@@ -1,8 +1,9 @@
-import Header from "@/components/Header/Header";
 import ThemeProvider from "@/components/Providers/ThemeProvider";
+import ToastProvider from "@/components/Providers/ToastProvider";
 import { notoSansHeading, nunitoSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 type RootLayoutProps = Readonly<{
@@ -25,9 +26,9 @@ const RootLayout = ({ children }: RootLayoutProps) => {
           attribute={"class"}
           defaultTheme="dark"
           enableSystem={false}>
-          <Header />
+          <ToastProvider />
 
-          <main className="mx-auto max-w-7xl">{children}</main>
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
