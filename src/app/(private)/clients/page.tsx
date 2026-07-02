@@ -33,7 +33,9 @@ const ClientsPage = async () => {
         </div>
 
         <Button>
-          <Link href={"/clients/create" as never}>
+          <Link
+            href={"/clients/create" as never}
+            className={"flex items-center justify-center gap-2"}>
             <PlusIcon /> Add client
           </Link>
         </Button>

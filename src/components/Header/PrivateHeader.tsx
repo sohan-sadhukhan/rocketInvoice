@@ -4,7 +4,6 @@ import ThemeToggleButton from "@/components/Buttons/ThemeToggleButton";
 import { Button } from "@/components/shadcnui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -12,22 +11,23 @@ import {
 } from "@/components/shadcnui/sheet";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { MenuIcon } from "lucide-react";
+import { ChevronDownIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-const privateNavLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/clients", label: "Clients" },
-  { href: "/invoices", label: "Invoices" },
-  { href: "/business", label: "Business" },
-  { href: "/products", label: "Products" },
-  { href: "/products/family/create", label: "Families" },
-  { href: "/taxrate", label: "Tax Rate" },
-  { href: "/settings", label: "Settings" },
-] as const;
+type NavSubItem = {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+};
+
+type NavGroup = {
+  label: string;
+  href?: string;
+  subItems?: NavSubItem[];
+};
 
 const NavLink = ({
   href,
@@ -59,9 +59,13 @@ const NavLink = ({
 
 const PrivateHeader = () => {
   const [open, setOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const router = useRouter();
 
-  const closeMenu = () => setOpen(false);
+  const closeMenu = () => {
+    setOpen(false);
+    setOpenMenu(null);
+  };
 
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -74,6 +78,51 @@ const PrivateHeader = () => {
     });
     closeMenu();
   };
+
+  const privateNavGroups: NavGroup[] = [
+    { label: "Dashboard", href: "/dashboard" },
+    {
+      label: "Clients",
+      href: "/clients",
+      subItems: [
+        { label: "View clients", href: "/clients" },
+        { label: "Create clients", href: "/clients/create" },
+      ],
+    },
+    {
+      label: "Invoices",
+      href: "/invoices",
+      subItems: [
+        { label: "View invoices", href: "/invoices" },
+        { label: "Create invoices", href: "/invoices/create" },
+      ],
+    },
+    {
+      label: "Products",
+      href: "/products",
+      subItems: [
+        { label: "View products", href: "/products" },
+        { label: "Create products", href: "/products/create" },
+        { label: "View product families", href: "/products/family" },
+        { label: "Create product families", href: "/products/family/create" },
+      ],
+    },
+    {
+      label: "Settings",
+      href: "/settings",
+      subItems: [
+        { label: "View tax rate", href: "/taxrate" },
+        { label: "Create tax rate", href: "/taxrate/create" },
+        { label: "Personal information", href: "/settings" },
+        {
+          label: "Sign out",
+          onClick: () => {
+            void handleSignOut();
+          },
+        },
+      ],
+    },
+  ];
 
   return (
     <header
@@ -91,12 +140,57 @@ const PrivateHeader = () => {
         <nav
           className="hidden items-center gap-5 lg:flex"
           aria-label="Dashboard navigation">
-          {privateNavLinks.map((link) => (
-            <NavLink
-              key={link.href}
-              href={link.href}
-              label={link.label}
-            />
+          {privateNavGroups.map((group) => (
+            <div
+              key={group.label}
+              className="relative">
+              {group.subItems ?
+                <>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenMenu((current) =>
+                        current === group.label ? null : group.label,
+                      )
+                    }
+                    className="hover:text-primary text-muted-foreground text-sm font-medium transition-colors">
+                    <span className="flex items-center gap-1">
+                      {group.label}
+                      <ChevronDownIcon className="size-4" />
+                    </span>
+                  </button>
+
+                  {openMenu === group.label && (
+                    <div className="bg-background absolute top-full left-0 mt-2 min-w-56 rounded-lg border p-2 shadow-lg">
+                      {group.subItems.map((item) =>
+                        item.onClick ?
+                          <button
+                            key={item.label}
+                            type="button"
+                            onClick={() => {
+                              item.onClick?.();
+                              closeMenu();
+                            }}
+                            className="hover:bg-muted hover:text-primary text-muted-foreground block w-full rounded-md px-3 py-2 text-left text-sm font-medium transition-colors">
+                            {item.label}
+                          </button>
+                        : <NavLink
+                            key={item.label}
+                            href={item.href ?? group.href ?? "/dashboard"}
+                            label={item.label}
+                            onClick={closeMenu}
+                            className="hover:bg-muted block rounded-md px-3 py-2"
+                          />,
+                      )}
+                    </div>
+                  )}
+                </>
+              : <NavLink
+                  href={group.href ?? "/dashboard"}
+                  label={group.label}
+                />
+              }
+            </div>
           ))}
 
           <Button
@@ -135,18 +229,57 @@ const PrivateHeader = () => {
               <nav
                 className="flex flex-col gap-4 px-4"
                 aria-label="Mobile dashboard navigation">
-                {privateNavLinks.map((link) => (
-                  <SheetClose
-                    key={link.href}
-                    render={
-                      <NavLink
-                        href={link.href}
-                        label={link.label}
+                {privateNavGroups.map((group) => (
+                  <div
+                    key={group.label}
+                    className="space-y-2">
+                    {group.subItems ?
+                      <>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenMenu((current) =>
+                              current === group.label ? null : group.label,
+                            )
+                          }
+                          className="hover:text-primary text-muted-foreground flex items-center gap-1 text-base font-medium transition-colors">
+                          {group.label}
+                          <ChevronDownIcon className="size-4" />
+                        </button>
+
+                        {openMenu === group.label && (
+                          <div className="ml-4 flex flex-col gap-2">
+                            {group.subItems.map((item) =>
+                              item.onClick ?
+                                <button
+                                  key={item.label}
+                                  type="button"
+                                  onClick={() => {
+                                    item.onClick?.();
+                                    closeMenu();
+                                  }}
+                                  className="hover:text-primary text-muted-foreground text-left text-sm font-medium transition-colors">
+                                  {item.label}
+                                </button>
+                              : <NavLink
+                                  key={item.label}
+                                  href={item.href ?? group.href ?? "/dashboard"}
+                                  label={item.label}
+                                  onClick={closeMenu}
+                                  className="text-base"
+                                />,
+                            )}
+                          </div>
+                        )}
+                      </>
+                    : <NavLink
+                        href={group.href ?? "/dashboard"}
+                        label={group.label}
                         onClick={closeMenu}
                         className="text-base"
                       />
                     }
-                  />
+                  </div>
                 ))}
 
                 <Button

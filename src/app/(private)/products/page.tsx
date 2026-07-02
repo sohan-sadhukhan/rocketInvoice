@@ -34,7 +34,9 @@ const ProductsPage = async () => {
         </div>
 
         <Button>
-          <Link href={"/products/create" as never}>
+          <Link
+            href={"/products/create" as never}
+            className={"flex items-center justify-center gap-2"}>
             <PlusIcon />
             Add product
           </Link>

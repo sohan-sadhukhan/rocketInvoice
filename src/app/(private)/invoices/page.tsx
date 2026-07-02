@@ -34,7 +34,9 @@ const InvoicesPage = async () => {
         </div>
 
         <Button>
-          <Link href={"/invoices/create" as never}>
+          <Link
+            href={"/invoices/create" as never}
+            className={"flex items-center justify-center gap-2"}>
             <PlusIcon /> Add invoice
           </Link>
         </Button>

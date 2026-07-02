@@ -34,7 +34,9 @@ const TaxRatePage = async () => {
         </div>
 
         <Button>
-          <Link href={"/taxrate/create" as never}>
+          <Link
+            href={"/taxrate/create" as never}
+            className="flex items-center justify-center gap-2">
             <PlusIcon />
             Add tax rate
           </Link>

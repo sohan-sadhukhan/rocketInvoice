@@ -175,6 +175,7 @@ export const createProductSchema = z.object({
   taxRateId: z.string().min(1, { error: "Tax rate is required" }),
   price: decimalStringSchema("Price"),
   familyId: z.string().min(1, { error: "Family is required" }),
+  businessId: z.string().min(1, { error: "business is required" }),
 });
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;
