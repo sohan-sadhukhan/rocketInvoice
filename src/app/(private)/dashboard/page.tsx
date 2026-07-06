@@ -1,17 +1,18 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import InvoiceOverview from "@/components/Dashboard/InvoiceOverview";
+import QuickActions from "@/components/Dashboard/QuickActions";
+import RecentInvoices from "@/components/Dashboard/RecentInvoices";
+import StatsCards from "@/components/Dashboard/StatsCards";
 
 const DashboardPage = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
   return (
-    <section className="space-y-4">
-      <h1 className="font-heading text-3xl font-semibold">Dashboard</h1>
-      <p className="text-muted-foreground">
-        Welcome back, {session?.user.name ?? "User"}.
-      </p>
+    <section className="space-y-6">
+      <QuickActions />
+      <StatsCards />
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <InvoiceOverview />
+        <RecentInvoices />
+      </div>
     </section>
   );
 };

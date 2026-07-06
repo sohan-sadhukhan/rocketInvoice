@@ -130,7 +130,7 @@ const PrivateHeader = () => {
       aria-label="dashboard-header">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
         <Link
-          href={"/dashboard" as never}
+          href={"/" as never}
           className="shrink-0">
           <span className="font-heading text-xl font-semibold sm:text-2xl">
             RocketInvoice

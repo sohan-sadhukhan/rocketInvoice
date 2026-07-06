@@ -16,7 +16,9 @@ const PrivateLayout = async ({ children }: LayoutChildrenProps) => {
   return (
     <>
       <PrivateHeader />
-      <div className="mx-auto w-full max-w-7xl px-6 pt-24 pb-12">{children}</div>
+      <div className="mx-auto w-full max-w-7xl px-6 pt-18 pb-12 md:pt-24">
+        {children}
+      </div>
     </>
   );
 };
