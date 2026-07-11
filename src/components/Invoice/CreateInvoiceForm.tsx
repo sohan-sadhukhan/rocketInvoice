@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/shadcnui/input";
 import { Textarea } from "@/components/shadcnui/textarea";
 import { createInvoiceSchema, type CreateInvoiceInput } from "@/lib/zodSchema";
-import { getBusinesses } from "@/server/business/getBusinesses";
 import { getClients } from "@/server/client/getClients";
 import { createInvoice } from "@/server/invoice/createInvoice";
 import { getProducts } from "@/server/product/getProducts";
@@ -34,9 +33,6 @@ const formatAmount = (value: number) =>
 const CreateInvoiceForm = () => {
   const router = useRouter();
 
-  const [businesses, setBusinesses] = useState<{ id: string; name: string }[]>(
-    [],
-  );
   const [clients, setClients] = useState<
     {
       id: string;
@@ -70,7 +66,6 @@ const CreateInvoiceForm = () => {
   } = useForm<CreateInvoiceInput>({
     resolver: zodResolver(createInvoiceSchema),
     defaultValues: {
-      businessId: "",
       invoiceDate: today,
       status: "draft",
       paymentMethod: "cash",
@@ -100,15 +95,12 @@ const CreateInvoiceForm = () => {
 
   useEffect(() => {
     const load = async () => {
-      const [businessItems, clientItems, productItems, taxRateItems] =
-        await Promise.all([
-          getBusinesses(),
-          getClients(),
-          getProducts(),
-          getTaxRates(),
-        ]);
+      const [clientItems, productItems, taxRateItems] = await Promise.all([
+        getClients(),
+        getProducts(),
+        getTaxRates(),
+      ]);
 
-      setBusinesses(businessItems);
       setClients(
         clientItems.map((client) => ({
           id: client.id,
@@ -215,34 +207,6 @@ const CreateInvoiceForm = () => {
       className="space-y-8">
       <div className="grid gap-4 lg:grid-cols-2">
         <FieldGroup>
-          <Controller
-            name="businessId"
-            control={control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="invoice-business-select">
-                  Business
-                </FieldLabel>
-                <select
-                  {...field}
-                  id="invoice-business-select"
-                  className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                  <option value="">Select business</option>
-                  {businesses.map((business) => (
-                    <option
-                      key={business.id}
-                      value={business.id}>
-                      {business.name}
-                    </option>
-                  ))}
-                </select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-
           <Controller
             name="invoiceDate"
             control={control}

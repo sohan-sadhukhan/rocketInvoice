@@ -31,15 +31,16 @@ export const createProduct = async (
     };
   }
 
-  const business = await prisma.business.findFirst({
+  const business = await prisma.user.findFirst({
     where: {
-      userId: session.user.id,
-      deletedAt: null,
+      id: session.user.id,
     },
-    orderBy: { createdAt: "asc" },
+    select: {
+      currentBusinessId: true,
+    },
   });
 
-  if (!business) {
+  if (!business?.currentBusinessId) {
     return {
       success: false,
       error: "Create a business before adding products.",
@@ -49,7 +50,7 @@ export const createProduct = async (
   const taxRate = await prisma.taxRate.findFirst({
     where: {
       id: parsed.data.taxRateId,
-      businessId: business.id,
+      businessId: business.currentBusinessId,
       deletedAt: null,
     },
     select: {
@@ -68,7 +69,7 @@ export const createProduct = async (
   const family = await prisma.productFamily.findFirst({
     where: {
       id: parsed.data.familyId,
-      businessId: business.id,
+      businessId: business.currentBusinessId,
       deletedAt: null,
     },
     select: {
@@ -93,7 +94,7 @@ export const createProduct = async (
         price: new Prisma.Decimal(parsed.data.price),
         family: family.name,
         familyId: family.id,
-        businessId: business.id,
+        businessId: business.currentBusinessId,
       },
     });
 

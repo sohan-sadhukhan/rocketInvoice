@@ -12,22 +12,23 @@ datasource db {
 }
 
 model User {
-  id              String     @id
-  name            String
-  email           String
-  emailVerified   Boolean    @default(false)
-  image           String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  username        String?
-  displayUsername String?
-  role            String?
-  banned          Boolean?   @default(false)
-  banReason       String?
-  banExpires      DateTime?
-  sessions        Session[]
-  accounts        Account[]
-  businesses      Business[]
+  id                String     @id
+  name              String
+  email             String
+  emailVerified     Boolean    @default(false)
+  image             String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  username          String?
+  displayUsername   String?
+  role              String?
+  banned            Boolean?   @default(false)
+  banReason         String?
+  banExpires        DateTime?
+  sessions          Session[]
+  accounts          Account[]
+  businesses        Business[]
+  currentBusinessId String?
 
   @@unique([email])
   @@unique([username])
@@ -160,26 +161,26 @@ model Client {
 }
 
 model Invoice {
-  id                String     @id @default(cuid())
-  invoiceDate       DateTime
-  status            String
-  paymentMethod     String
-  clientId          String?
-  client            Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  clientName        String
-  clientAddress     String
+  id                       String        @id @default(cuid())
+  invoiceDate              DateTime
+  status                   String
+  paymentMethod            String
+  clientId                 String?
+  client                   Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientName               String
+  clientAddress            String
   clientContactInformation String
-  businessId        String
-  business          Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  globalDiscount    Decimal    @default(0)
-  subtotal          Decimal
-  itemDiscount      Decimal
-  taxTotal          Decimal
-  total             Decimal
-  invoiceItems      InvoiceItem[]
-  deletedAt         DateTime?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  businessId               String
+  business                 Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  globalDiscount           Decimal       @default(0)
+  subtotal                 Decimal
+  itemDiscount             Decimal
+  taxTotal                 Decimal
+  total                    Decimal
+  invoiceItems             InvoiceItem[]
+  deletedAt                DateTime?
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
 
   @@index([businessId])
   @@index([clientId])
@@ -187,20 +188,20 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id          String   @id @default(cuid())
-  invoiceId   String
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  productId   String?
-  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  name        String
-  quantity    Decimal
-  price       Decimal
-  discount    Decimal
-  taxRate     Decimal
-  lineTotal   Decimal
-  deletedAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String    @id @default(cuid())
+  invoiceId String
+  invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  quantity  Decimal
+  price     Decimal
+  discount  Decimal
+  taxRate   Decimal
+  lineTotal Decimal
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([invoiceId])
   @@index([productId])

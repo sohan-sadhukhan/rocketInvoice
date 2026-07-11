@@ -34,15 +34,16 @@ export const createProductFamily = async (
   }
 
   // Validate selected business belongs to the current user
-  const business = await prisma.business.findFirst({
+  const business = await prisma.user.findFirst({
     where: {
-      id: parsed.data.businessId,
-      userId: session.user.id,
-      deletedAt: null,
+      id: session.user.id,
+    },
+    select: {
+      currentBusinessId: true,
     },
   });
 
-  if (!business) {
+  if (!business?.currentBusinessId) {
     return {
       success: false,
       error: "Selected business not found or you don't have access.",
@@ -53,7 +54,7 @@ export const createProductFamily = async (
     const family = await prisma.productFamily.create({
       data: {
         name: parsed.data.name,
-        businessId: parsed.data.businessId,
+        businessId: business.currentBusinessId,
       },
     });
 

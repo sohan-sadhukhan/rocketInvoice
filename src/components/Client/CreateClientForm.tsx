@@ -10,12 +10,10 @@ import {
 import { Input } from "@/components/shadcnui/input";
 import { Textarea } from "@/components/shadcnui/textarea";
 import { createClientSchema, type CreateClientInput } from "@/lib/zodSchema";
-import { getBusinesses } from "@/server/business/getBusinesses";
 import { createClient } from "@/server/client/createClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -34,23 +32,9 @@ const CreateClientForm = () => {
       contactInformation: "",
       gender: undefined,
       birthdate: undefined,
-      businessId: "",
     },
     mode: "all",
   });
-
-  const [businesses, setBusinesses] = useState<{ id: string; name: string }[]>(
-    [],
-  );
-
-  useEffect(() => {
-    const load = async () => {
-      const items = await getBusinesses();
-      setBusinesses(items.map((b: any) => ({ id: b.id, name: b.name })));
-    };
-
-    void load();
-  }, []);
 
   const onSubmit = async (values: CreateClientInput) => {
     const result = await createClient(values);
@@ -134,30 +118,6 @@ const CreateClientForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="e.g. Non-binary, Female, Male"
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          name="businessId"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Business</FieldLabel>
-              <select
-                {...field}
-                id={field.name}
-                className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                <option value="">Select a business</option>
-                {businesses.map((b) => (
-                  <option
-                    key={b.id}
-                    value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

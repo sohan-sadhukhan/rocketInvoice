@@ -70,7 +70,6 @@ export const createProductFamilySchema = z.object({
     .string()
     .min(1, { error: "Family name is required" })
     .max(100, { error: "Family name must be at most 100 characters" }),
-  businessId: z.string().min(1, { error: "Business is required" }),
 });
 
 export type CreateProductFamilyInput = z.infer<
@@ -91,7 +90,6 @@ export const createClientSchema = z.object({
     .min(1, { error: "Contact information is required" })
     .max(500, { error: "Contact information must be at most 500 characters" }),
   gender: z.string().max(50).optional(),
-  businessId: z.string().min(1, { error: "Business is required" }),
   birthdate: z.string().optional(),
 });
 
@@ -120,7 +118,6 @@ const invoiceItemSchema = z.object({
 
 export const createInvoiceSchema = z
   .object({
-    businessId: z.string().min(1, { error: "Business is required" }),
     invoiceDate: z.string().min(1, { error: "Invoice date is required" }),
     status: z.enum(["draft", "sent", "paid", "cancelled"]),
     paymentMethod: z.enum(["cash", "online"]),
@@ -175,13 +172,11 @@ export const createProductSchema = z.object({
   taxRateId: z.string().min(1, { error: "Tax rate is required" }),
   price: decimalStringSchema("Price"),
   familyId: z.string().min(1, { error: "Family is required" }),
-  businessId: z.string().min(1, { error: "business is required" }),
 });
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 
 export const createTaxRateSchema = z.object({
-  businessId: z.string().min(1, { error: "Business is required" }),
   name: z
     .string()
     .min(1, { error: "Tax rate name is required" })

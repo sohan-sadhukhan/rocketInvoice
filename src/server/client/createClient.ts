@@ -28,15 +28,16 @@ export const createClient = async (
   }
 
   // validate that provided businessId belongs to the user
-  const business = await prisma.business.findFirst({
+  const business = await prisma.user.findFirst({
     where: {
-      id: (parsed as any).data.businessId,
-      userId: session.user.id,
-      deletedAt: null,
+      id: session.user.id,
+    },
+    select: {
+      currentBusinessId: true,
     },
   });
 
-  if (!business) {
+  if (!business?.currentBusinessId) {
     return {
       success: false,
       error: "Selected business not found or you don't have access.",
@@ -52,7 +53,7 @@ export const createClient = async (
         gender: parsed.data.gender ?? null,
         birthdate:
           parsed.data.birthdate ? new Date(parsed.data.birthdate) : null,
-        businessId: (parsed as any).data.businessId,
+        businessId: business.currentBusinessId,
       },
     });
 

@@ -31,15 +31,16 @@ export const createTaxRate = async (
     };
   }
 
-  const business = await prisma.business.findFirst({
+  const business = await prisma.user.findFirst({
     where: {
-      id: parsed.data.businessId,
-      userId: session.user.id,
-      deletedAt: null,
+      id: session.user.id,
+    },
+    select: {
+      currentBusinessId: true,
     },
   });
 
-  if (!business) {
+  if (!business?.currentBusinessId) {
     return {
       success: false,
       error: "Select a valid business before adding tax rates.",
@@ -51,7 +52,7 @@ export const createTaxRate = async (
       data: {
         name: parsed.data.name,
         percent: new Prisma.Decimal(parsed.data.percent),
-        businessId: business.id,
+        businessId: business.currentBusinessId,
       },
     });
 

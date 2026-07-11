@@ -31,15 +31,16 @@ export const createInvoice = async (
     };
   }
 
-  const business = await prisma.business.findFirst({
+  const business = await prisma.user.findFirst({
     where: {
-      id: parsed.data.businessId,
-      userId: session.user.id,
-      deletedAt: null,
+      id: session.user.id,
+    },
+    select: {
+      currentBusinessId: true,
     },
   });
 
-  if (!business) {
+  if (!business?.currentBusinessId) {
     return {
       success: false,
       error: "Selected business not found or you don't have access.",
@@ -56,7 +57,7 @@ export const createInvoice = async (
         contactInformation: parsed.data.clientContactInformation ?? "",
         gender: null,
         birthdate: null,
-        businessId: business.id,
+        businessId: business.currentBusinessId,
       },
     });
 
@@ -118,7 +119,7 @@ export const createInvoice = async (
         clientAddress: parsed.data.clientAddress ?? "",
         clientContactInformation: parsed.data.clientContactInformation ?? "",
 
-        businessId: business.id,
+        businessId: business.currentBusinessId,
 
         globalDiscount: new Decimal(parsed.data.globalDiscount),
 

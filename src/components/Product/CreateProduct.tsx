@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/shadcnui/input";
 import { Textarea } from "@/components/shadcnui/textarea";
 import { createProductSchema, type CreateProductInput } from "@/lib/zodSchema";
-import { getBusinesses } from "@/server/business/getBusinesses";
 import { createProduct } from "@/server/product/createProduct";
 import { getProductFamilies } from "@/server/product/getProductFamilies";
 import { getTaxRates } from "@/server/taxrate/getTaxRates";
@@ -27,10 +26,6 @@ const CreateProduct = () => {
   const [taxRates, setTaxRates] = useState<
     { id: string; name: string; percent: string }[]
   >([]);
-  const [businesses, setBusinesses] = useState<{ id: string; name: string }[]>(
-    [],
-  );
-
   const {
     handleSubmit,
     control,
@@ -43,22 +38,19 @@ const CreateProduct = () => {
       taxRateId: "",
       price: "",
       familyId: "",
-      businessId: "",
     },
     mode: "all",
   });
 
   useEffect(() => {
     const loadData = async () => {
-      const [nextFamilies, nextTaxRates, nextBusinesses] = await Promise.all([
+      const [nextFamilies, nextTaxRates] = await Promise.all([
         getProductFamilies(),
         getTaxRates(),
-        getBusinesses(),
       ]);
 
       setFamilies(nextFamilies);
       setTaxRates(nextTaxRates);
-      setBusinesses(nextBusinesses);
     };
 
     void loadData();
@@ -112,30 +104,6 @@ const CreateProduct = () => {
                 placeholder="Optional product description"
                 rows={3}
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          name="businessId"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Business</FieldLabel>
-              <select
-                {...field}
-                id={field.name}
-                className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                <option value="">Select business</option>
-                {businesses.map((business) => (
-                  <option
-                    key={business.id}
-                    value={business.id}>
-                    {business.name}
-                  </option>
-                ))}
-              </select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

@@ -9,20 +9,16 @@ import {
 } from "@/components/shadcnui/field";
 import { Input } from "@/components/shadcnui/input";
 import { createTaxRateSchema, type CreateTaxRateInput } from "@/lib/zodSchema";
-import { getBusinesses } from "@/server/business/getBusinesses";
 import { createTaxRate } from "@/server/taxrate/createTaxRate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const CreateTaxRateForm = () => {
   const router = useRouter();
-  const [businesses, setBusinesses] = useState<{ id: string; name: string }[]>(
-    [],
-  );
 
   const {
     handleSubmit,
@@ -31,7 +27,6 @@ const CreateTaxRateForm = () => {
   } = useForm<CreateTaxRateInput>({
     resolver: zodResolver(createTaxRateSchema),
     defaultValues: {
-      businessId: "",
       name: "",
       percent: "",
     },
@@ -39,10 +34,7 @@ const CreateTaxRateForm = () => {
   });
 
   useEffect(() => {
-    const loadBusinesses = async () => {
-      const nextBusinesses = await getBusinesses();
-      setBusinesses(nextBusinesses);
-    };
+    const loadBusinesses = async () => {};
 
     void loadBusinesses();
   }, []);
@@ -65,30 +57,6 @@ const CreateTaxRateForm = () => {
       noValidate
       className="space-y-6">
       <FieldGroup>
-        <Controller
-          name="businessId"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Business</FieldLabel>
-              <select
-                {...field}
-                id={field.name}
-                className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                <option value="">Select business</option>
-                {businesses.map((business) => (
-                  <option
-                    key={business.id}
-                    value={business.id}>
-                    {business.name}
-                  </option>
-                ))}
-              </select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
         <Controller
           name="name"
           control={control}
