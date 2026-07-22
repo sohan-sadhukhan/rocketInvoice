@@ -52,9 +52,9 @@ export const createInvoice = async (
   if (!clientId) {
     const client = await prisma.client.create({
       data: {
-        name: parsed.data.clientName ?? "",
-        address: parsed.data.clientAddress ?? "",
-        contactInformation: parsed.data.clientContactInformation ?? "",
+        name: parsed.data.clientName,
+        address: parsed.data.clientAddress,
+        contactInformation: parsed.data.clientContactInformation,
         gender: null,
         birthdate: null,
         businessId: business.currentBusinessId,

@@ -25,7 +25,7 @@ const BusinessSwitcher = () => {
       ]);
 
       const currentBusiness = businesses?.find(
-        (data: any) => data.id === currentBusinessId?.currentBusinessId,
+        (data) => data.id === currentBusinessId?.currentBusinessId,
       );
 
       if (currentBusiness) {

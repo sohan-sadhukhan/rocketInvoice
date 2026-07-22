@@ -41,6 +41,7 @@ const CreateInvoiceForm = () => {
       contactInformation: string;
     }[]
   >([]);
+
   const [products, setProducts] = useState<
     {
       id: string;
@@ -49,6 +50,7 @@ const CreateInvoiceForm = () => {
       taxRate: string;
     }[]
   >([]);
+
   const [taxRates, setTaxRates] = useState<
     {
       id: string;
@@ -666,7 +668,6 @@ const CreateInvoiceForm = () => {
                 {formatAmount(totals.total)}
               </p>
             </div>
-
             <Button
               type="submit"
               className="w-full"

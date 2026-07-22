@@ -113,6 +113,7 @@ const PrivateHeader = () => {
       label: "Settings",
       href: "/settings",
       content: <BusinessSwitcher />,
+
       subItems: [
         { label: "View tax rate", href: "/taxrate" },
         { label: "Create tax rate", href: "/taxrate/create" },

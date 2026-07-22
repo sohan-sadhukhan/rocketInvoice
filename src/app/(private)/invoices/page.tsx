@@ -1,3 +1,4 @@
+import { InvoicePdf } from "@/components/Invoice/InvoicePdf";
 import { Badge } from "@/components/shadcnui/badge";
 import { Button } from "@/components/shadcnui/button";
 import {
@@ -15,13 +16,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shadcnui/table";
-import { getInvoices } from "@/server/invoice/getInvoices";
+import { InvoiceListItem } from "@/lib/types";
+import { getCurrentBusinessDetails } from "@/server/business/getCurrentBusinessDetails";
+import { getInvoiceDetails } from "@/server/invoice/getInvoiceDetails";
 import { format } from "date-fns";
 import { PlusIcon, ReceiptText } from "lucide-react";
 import Link from "next/link";
 
 const InvoicesPage = async () => {
-  const invoices = await getInvoices();
+  const invoices = await getInvoiceDetails();
+  const currentBusiness = await getCurrentBusinessDetails();
 
   return (
     <section className="space-y-6">
@@ -78,10 +82,11 @@ const InvoicesPage = async () => {
                   <TableHead>Client</TableHead>
                   <TableHead>Total</TableHead>
                   <TableHead>Created</TableHead>
+                  <TableHead>Invoice PDF</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {invoices.map((invoice) => (
+                {invoices.map((invoice: InvoiceListItem) => (
                   <TableRow key={invoice.id}>
                     <TableCell>
                       {format(invoice.invoiceDate, "dd MMM yyyy")}
@@ -94,6 +99,12 @@ const InvoicesPage = async () => {
                     <TableCell>{invoice.total}</TableCell>
                     <TableCell>
                       {format(invoice.createdAt, "dd MMM yyyy")}
+                    </TableCell>
+                    <TableCell>
+                      <InvoicePdf
+                        invoice={invoice}
+                        currentBusiness={currentBusiness}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

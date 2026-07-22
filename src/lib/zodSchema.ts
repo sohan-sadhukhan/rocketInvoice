@@ -122,9 +122,9 @@ export const createInvoiceSchema = z
     status: z.enum(["draft", "sent", "paid", "cancelled"]),
     paymentMethod: z.enum(["cash", "online"]),
     clientId: z.string().optional(),
-    clientName: z.string().optional(),
-    clientAddress: z.string().optional(),
-    clientContactInformation: z.string().optional(),
+    clientName: z.string(),
+    clientAddress: z.string(),
+    clientContactInformation: z.string(),
     items: z
       .array(invoiceItemSchema)
       .min(1, { error: "At least one invoice item is required" }),
