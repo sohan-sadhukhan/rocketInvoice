@@ -21,10 +21,11 @@ model User {
   updatedAt         DateTime   @updatedAt
   username          String?
   displayUsername   String?
-  role              String?
+  role              Role       @default(USER)
   banned            Boolean?   @default(false)
   banReason         String?
   banExpires        DateTime?
+  deletedAt         DateTime?
   sessions          Session[]
   accounts          Account[]
   businesses        Business[]
@@ -227,4 +228,9 @@ model Product {
   @@index([businessId])
   @@index([familyId])
   @@map("product")
+}
+
+enum Role {
+  USER
+  ADMIN
 }
