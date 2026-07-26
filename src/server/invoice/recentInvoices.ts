@@ -2,8 +2,11 @@
 
 import prisma from "@/lib/database/dbClient";
 
-const recentInvoices = async () => {
+const recentInvoices = async (currentBusinessId: string) => {
   const thisMonthInvoices = await prisma.invoice.findMany({
+    where: {
+      businessId: currentBusinessId,
+    },
     orderBy: {
       createdAt: "desc",
     },

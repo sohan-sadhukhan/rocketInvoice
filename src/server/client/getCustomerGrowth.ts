@@ -1,13 +1,8 @@
 "use server";
 
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/database/dbClient";
-import { headers } from "next/headers";
 
-const getCustomerGrowth = async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return {};
-
+const getCustomerGrowth = async (currentBusinessId: string) => {
   const now = new Date();
 
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -15,6 +10,7 @@ const getCustomerGrowth = async () => {
 
   const thisMonthCustomers = await prisma.client.count({
     where: {
+      businessId: currentBusinessId,
       createdAt: {
         gte: startOfMonth,
         lt: endOfMonth,
@@ -28,6 +24,7 @@ const getCustomerGrowth = async () => {
 
   const lastMonthCustomers = await prisma.client.count({
     where: {
+      businessId: currentBusinessId,
       createdAt: {
         gte: startOfLastMonth,
         lt: endOfLastMonth,

@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/database/dbClient";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 export const updateCurrentBusiness = async (businessId: string) => {
@@ -40,6 +41,8 @@ export const updateCurrentBusiness = async (businessId: string) => {
         currentBusinessId: business.id,
       },
     });
+
+    revalidatePath("/dashboard");
 
     return {
       success: true,

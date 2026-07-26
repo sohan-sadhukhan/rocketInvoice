@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/database/dbClient";
 
-const getMonthlyInvoices = async () => {
+const getMonthlyInvoices = async (currentBusinessId: string) => {
   const now = new Date();
 
   const startofMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -10,6 +10,7 @@ const getMonthlyInvoices = async () => {
 
   const thisMonthInvoice = await prisma.invoice.count({
     where: {
+      businessId: currentBusinessId,
       createdAt: {
         gte: startofMonth,
         lt: endofMonth,
@@ -22,6 +23,7 @@ const getMonthlyInvoices = async () => {
 
   const lastMonthInvoice = await prisma.invoice.count({
     where: {
+      businessId: currentBusinessId,
       createdAt: {
         gte: startoLastfMonth,
         lt: endofLastMonth,

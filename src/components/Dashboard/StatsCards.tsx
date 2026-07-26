@@ -10,11 +10,15 @@ import getCustomerGrowth from "@/server/client/getCustomerGrowth";
 import { ArrowUpRight, UsersIcon } from "lucide-react";
 import getMonthlyInvoices from "../../server/invoice/getMonthlyInvoices";
 
-const StatsCards = async () => {
+type StatsCardsProp = {
+  currentBusinessId: string;
+};
+
+const StatsCards = async ({ currentBusinessId }: StatsCardsProp) => {
   const [customersNumber, revenueGrowth, monthlyInvoices] = await Promise.all([
-    getCustomerGrowth(),
-    getRevenueStats(),
-    getMonthlyInvoices(),
+    getCustomerGrowth(currentBusinessId),
+    getRevenueStats(currentBusinessId),
+    getMonthlyInvoices(currentBusinessId),
   ]);
 
   return (

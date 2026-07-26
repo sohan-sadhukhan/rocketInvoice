@@ -72,13 +72,15 @@ const ProductFamiliesPage = async () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
+                  <TableHead className="font-bold">Name</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {families.map((family) => (
                   <TableRow key={family.id}>
-                    <TableCell className="font-medium">{family.name}</TableCell>
+                    <TableCell className="text-primary/80 font-medium">
+                      {family.name}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

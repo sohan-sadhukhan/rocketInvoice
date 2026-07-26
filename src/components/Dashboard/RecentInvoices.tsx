@@ -17,8 +17,12 @@ const statusStyles: Record<string, string> = {
   cancelled: "bg-rose-500/10 text-rose-600",
 };
 
-const RecentInvoices = async () => {
-  const invoices = await recentInvoices();
+type RecentInvoicesProp = {
+  currentBusinessId: string;
+};
+
+const RecentInvoices = async ({ currentBusinessId }: RecentInvoicesProp) => {
+  const invoices = await recentInvoices(currentBusinessId);
 
   return (
     <div className="bg-card/70 ring-foreground/5 dark:ring-foreground/10 rounded-4xl border p-6 shadow-sm ring-1">

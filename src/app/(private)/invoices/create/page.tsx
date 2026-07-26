@@ -9,7 +9,7 @@ import {
 
 const CreateInvoicePage = () => {
   return (
-    <section className="mx-auto w-full max-w-5xl">
+    <section className="mx-auto w-full">
       <Card>
         <CardHeader>
           <CardTitle>Create invoice</CardTitle>

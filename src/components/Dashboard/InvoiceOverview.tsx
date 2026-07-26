@@ -7,8 +7,12 @@ import {
 } from "@/components/shadcnui/card";
 import getMonthlyInvoicesStatus from "@/server/invoice/getMonthlyInvoicesStatus";
 
-const InvoiceOverview = async () => {
-  const allInvoices = await getMonthlyInvoicesStatus();
+type InvoiceOverviewProp = {
+  currentBusinessId: string;
+};
+
+const InvoiceOverview = async ({ currentBusinessId }: InvoiceOverviewProp) => {
+  const allInvoices = await getMonthlyInvoicesStatus(currentBusinessId);
   return (
     <Card>
       <CardHeader>
