@@ -9,6 +9,14 @@ import {
   FieldLabel,
 } from "@/components/shadcnui/field";
 import { Input } from "@/components/shadcnui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/shadcnui/select";
 import { Textarea } from "@/components/shadcnui/textarea";
 import { createInvoiceSchema, type CreateInvoiceInput } from "@/lib/zodSchema";
 import { getClients } from "@/server/client/getClients";
@@ -202,6 +210,37 @@ const CreateInvoiceForm = () => {
     return quantity * price - discount + quantity * price * (taxRate / 100);
   };
 
+  const invoiceStatus = [
+    {
+      label: "Draft",
+      value: "draft",
+    },
+
+    {
+      label: "Sent",
+      value: "sent",
+    },
+    {
+      label: "Paid",
+      value: "paid",
+    },
+    {
+      label: "Cancelled",
+      value: "cancelled",
+    },
+  ];
+
+  const paymentMethod = [
+    {
+      label: "Cash",
+      value: "cash",
+    },
+
+    {
+      label: "Online",
+      value: "online",
+    },
+  ];
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -233,45 +272,79 @@ const CreateInvoiceForm = () => {
           <Controller
             name="status"
             control={control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="invoice-status-select">Status</FieldLabel>
-                <select
-                  {...field}
-                  id="invoice-status-select"
-                  className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                  <option value="draft">Draft</option>
-                  <option value="sent">Sent</option>
-                  <option value="paid">Paid</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            render={({ field, fieldState }) => {
+              const selectedStatus = invoiceStatus.find(
+                (item) => item.value === field.value,
+              );
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="invoice-status-select">
+                    Status
+                  </FieldLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      {selectedStatus?.label ?? "Select status"}
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {invoiceStatus.map((item) => (
+                          <SelectItem
+                            key={item.value}
+                            value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              );
+            }}
           />
 
           <Controller
             name="paymentMethod"
             control={control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="invoice-payment-method-select">
-                  Payment method
-                </FieldLabel>
-                <select
-                  {...field}
-                  id="invoice-payment-method-select"
-                  className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                  <option value="cash">Cash</option>
-                  <option value="online">Online</option>
-                </select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            render={({ field, fieldState }) => {
+              const selectedMethod = paymentMethod.find(
+                (item) => item.value === field.value,
+              );
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="invoice-payment-method-select">
+                    Payment method
+                  </FieldLabel>
+
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      {selectedMethod?.label ?? "Select status"}
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {paymentMethod.map((item) => (
+                          <SelectItem
+                            key={item.value}
+                            value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              );
+            }}
           />
         </FieldGroup>
 
@@ -284,19 +357,23 @@ const CreateInvoiceForm = () => {
                 <FieldLabel htmlFor="invoice-client-select">
                   Existing client
                 </FieldLabel>
-                <select
-                  {...field}
-                  id="invoice-client-select"
-                  className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                  <option value="">Manual client entry</option>
-                  {clients.map((client) => (
-                    <option
-                      key={client.id}
-                      value={client.id}>
-                      {client.name}
-                    </option>
-                  ))}
-                </select>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select client" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={""}>Manual client entry</SelectItem>
+                    {clients.map((client) => (
+                      <SelectItem
+                        key={client.id}
+                        value={client.id}>
+                        {client.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -400,51 +477,77 @@ const CreateInvoiceForm = () => {
                   <Controller
                     name={`items.${index}.productId` as const}
                     control={control}
-                    render={({ field }) => (
-                      <Field>
-                        <FieldLabel htmlFor={`product-select-${index}`}>
-                          Product
-                        </FieldLabel>
-                        <select
-                          {...field}
-                          id={`product-select-${index}`}
-                          className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none"
-                          onChange={(event) => {
-                            const productId = event.target.value;
-                            field.onChange(productId);
+                    render={({ field, fieldState }) => {
+                      const selectedProduct = products.find(
+                        (product) => product.id === field.value,
+                      );
 
-                            const selectedProduct = products.find(
-                              (product) => product.id === productId,
-                            );
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor={`product-select-${index}`}>
+                            Product
+                          </FieldLabel>
 
-                            if (!selectedProduct) {
-                              return;
-                            }
+                          <Select
+                            value={field.value}
+                            onValueChange={(productId) => {
+                              field.onChange(productId);
 
-                            setValue(
-                              `items.${index}.name`,
-                              selectedProduct.name,
-                            );
-                            setValue(
-                              `items.${index}.price`,
-                              selectedProduct.price,
-                            );
-                            setValue(
-                              `items.${index}.taxRate`,
-                              selectedProduct.taxRate,
-                            );
-                          }}>
-                          <option value="">Manual item</option>
-                          {products.map((product) => (
-                            <option
-                              key={product.id}
-                              value={product.id}>
-                              {product.name}
-                            </option>
-                          ))}
-                        </select>
-                      </Field>
-                    )}
+                              const selectedProduct = products.find(
+                                (product) => product.id === productId,
+                              );
+
+                              if (!selectedProduct) {
+                                return;
+                              }
+
+                              setValue(
+                                `items.${index}.name`,
+                                selectedProduct.name,
+                              );
+                              setValue(
+                                `items.${index}.price`,
+                                selectedProduct.price,
+                              );
+                              setValue(
+                                `items.${index}.taxRate`,
+                                selectedProduct.taxRate,
+                              );
+                            }}>
+                            <SelectTrigger
+                              id={`product-select-${index}`}
+                              aria-invalid={fieldState.invalid}>
+                              {selectedProduct ?
+                                <span className="truncate">
+                                  {selectedProduct.name}
+                                </span>
+                              : <span className="text-muted-foreground">
+                                  Manual item
+                                </span>
+                              }
+                            </SelectTrigger>
+
+                            <SelectContent className={"w-md"}>
+                              <SelectGroup>
+                                <SelectItem value="">Manual item</SelectItem>
+
+                                {products.map((product) => (
+                                  <SelectItem
+                                    key={product.id}
+                                    value={product.id}>
+                                    {product.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
                   />
                 </div>
 
@@ -551,29 +654,54 @@ const CreateInvoiceForm = () => {
                   <Controller
                     name={`items.${index}.taxRate` as const}
                     control={control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={`item-tax-rate-${index}`}>
-                          Tax rate
-                        </FieldLabel>
-                        <select
-                          {...field}
-                          id={`item-tax-rate-${index}`}
-                          className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                          <option value="">Select tax rate</option>
-                          {taxRates.map((taxRate) => (
-                            <option
-                              key={taxRate.id}
-                              value={taxRate.percent}>
-                              {taxRate.name} ({taxRate.percent}%)
-                            </option>
-                          ))}
-                        </select>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
+                    render={({ field, fieldState }) => {
+                      const selectedTaxRate = taxRates.find(
+                        (taxRate) => taxRate.percent === field.value,
+                      );
+
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor={`item-tax-rate-${index}`}>
+                            Tax rate
+                          </FieldLabel>
+
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}>
+                            <SelectTrigger
+                              id={`item-tax-rate-${index}`}
+                              aria-invalid={fieldState.invalid}
+                              className="w-full">
+                              <span className="truncate">
+                                {selectedTaxRate ?
+                                  `${selectedTaxRate.name} (${selectedTaxRate.percent}%)`
+                                : "Select tax rate"}
+                              </span>
+                            </SelectTrigger>
+
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectItem value="">
+                                  Select tax rate
+                                </SelectItem>
+
+                                {taxRates.map((taxRate) => (
+                                  <SelectItem
+                                    key={taxRate.id}
+                                    value={taxRate.percent}>
+                                    {taxRate.name} ({taxRate.percent}%)
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
                   />
                 </div>
 

@@ -89,7 +89,7 @@ export const createClientSchema = z.object({
     .string()
     .min(1, { error: "Contact information is required" })
     .max(500, { error: "Contact information must be at most 500 characters" }),
-  gender: z.string().max(50).optional(),
+  gender: z.string().optional(),
   birthdate: z.string().optional(),
 });
 
@@ -169,7 +169,7 @@ export const createProductSchema = z.object({
     .string()
     .max(1000, { error: "Description must be at most 1000 characters" })
     .optional(),
-  taxRateId: z.string().min(1, { error: "Tax rate is required" }),
+  taxRateId: z.string(),
   price: decimalStringSchema("Price"),
   familyId: z.string().min(1, { error: "Family is required" }),
 });

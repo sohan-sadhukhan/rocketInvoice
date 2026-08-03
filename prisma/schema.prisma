@@ -148,7 +148,7 @@ model Client {
   name               String
   address            String
   contactInformation String
-  gender             String?
+  gender             Gender?
   birthdate          DateTime?
   businessId         String
   business           Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
@@ -213,7 +213,7 @@ model Product {
   id            String         @id @default(cuid())
   name          String
   description   String?
-  taxRate       Decimal
+  taxRate       Decimal?
   price         Decimal
   family        String
   familyId      String?
@@ -233,4 +233,10 @@ model Product {
 enum Role {
   USER
   ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }

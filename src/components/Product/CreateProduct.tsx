@@ -19,6 +19,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../shadcnui/select";
 
 const CreateProduct = () => {
   const router = useRouter();
@@ -115,7 +122,24 @@ const CreateProduct = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Tax rate</FieldLabel>
-              <select
+
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Tax Rate" />
+                </SelectTrigger>
+                <SelectContent>
+                  {taxRates.map((taxRate) => (
+                    <SelectItem
+                      key={taxRate.id}
+                      value={taxRate.id}>
+                      {taxRate.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {/* <select
                 {...field}
                 id={field.name}
                 className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
@@ -127,7 +151,7 @@ const CreateProduct = () => {
                     {taxRate.name} ({taxRate.percent}%)
                   </option>
                 ))}
-              </select>
+              </select> */}
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -158,19 +182,23 @@ const CreateProduct = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Family</FieldLabel>
-              <select
-                {...field}
-                id="family-select"
-                className="border-input bg-background focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs transition outline-none">
-                <option value="">Select a family</option>
-                {families.map((family) => (
-                  <option
-                    key={family.id}
-                    value={family.id}>
-                    {family.name}
-                  </option>
-                ))}
-              </select>
+
+              <Select
+                value={field.value != null ? String(field.value) : ""}
+                onValueChange={field.onChange}>
+                <SelectTrigger id={field.name}>
+                  <SelectValue placeholder="Select a family" />
+                </SelectTrigger>
+                <SelectContent>
+                  {families.map((family) => (
+                    <SelectItem
+                      key={family.id}
+                      value={String(family.id)}>
+                      {family.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

@@ -71,7 +71,7 @@ const QuickActions = () => {
           Quick actions
         </h2>
 
-        <div className="flex items-center justify-between">
+        <div className="border-primary/15 flex items-center justify-between rounded-full border px-1 py-0.5">
           {actions.map((action) => {
             const Icon = action.icon;
 

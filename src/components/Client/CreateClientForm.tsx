@@ -16,6 +16,13 @@ import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../shadcnui/select";
 
 const CreateClientForm = () => {
   const router = useRouter();
@@ -112,12 +119,22 @@ const CreateClientForm = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Gender</FieldLabel>
-              <Input
-                {...field}
-                id={field.name}
-                aria-invalid={fieldState.invalid}
-                placeholder="e.g. Non-binary, Female, Male"
-              />
+              <Select
+                value={field.value ?? ""}
+                onValueChange={(value) =>
+                  field.onChange(
+                    value === "" ? undefined : value?.toUpperCase(),
+                  )
+                }>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
