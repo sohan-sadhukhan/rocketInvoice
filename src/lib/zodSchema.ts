@@ -90,7 +90,7 @@ export const createClientSchema = z.object({
     .min(1, { error: "Contact information is required" })
     .max(500, { error: "Contact information must be at most 500 characters" }),
   gender: z.string().optional(),
-  birthdate: z.string().optional(),
+  birthdate: z.date().optional(),
 });
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
@@ -118,7 +118,7 @@ const invoiceItemSchema = z.object({
 
 export const createInvoiceSchema = z
   .object({
-    invoiceDate: z.string().min(1, { error: "Invoice date is required" }),
+    invoiceDate: z.date().min(1, { error: "Invoice date is required" }),
     status: z.enum(["draft", "sent", "paid", "cancelled"]),
     paymentMethod: z.enum(["cash", "online"]),
     clientId: z.string().optional(),

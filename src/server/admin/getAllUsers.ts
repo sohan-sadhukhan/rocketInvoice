@@ -3,17 +3,26 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/database/dbClient";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (cursor: string | null) => {
+  const limit = 10;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session || session.user.role !== "ADMIN") {
-    throw new Error("Unauthorized");
+    redirect("/auth/signin");
   }
 
   const users = await prisma.user.findMany({
+    take: limit + 1,
+    ...(cursor && {
+      skip: 1,
+      cursor: {
+        id: cursor,
+      },
+    }),
     where: {
       deletedAt: null,
     },
@@ -23,8 +32,6 @@ export const getAllUsers = async () => {
       email: true,
       role: true,
       banned: true,
-      banReason: true,
-      banExpires: true,
       createdAt: true,
       _count: {
         select: {
@@ -37,5 +44,15 @@ export const getAllUsers = async () => {
     },
   });
 
-  return users;
+  const hasNextPage = users.length > limit;
+
+  const paginatedItems = hasNextPage ? users.slice(0, limit) : users;
+
+  const nextCursor =
+    hasNextPage ? paginatedItems[paginatedItems.length - 1].id : null;
+
+  return {
+    data: paginatedItems,
+    nextCursor,
+  };
 };

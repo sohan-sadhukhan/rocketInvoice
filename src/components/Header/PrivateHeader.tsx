@@ -16,7 +16,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import BusinessSwitcher from "../Business/BusinessSwitcher";
 
 type NavSubItem = {
   label: string;
@@ -28,7 +27,6 @@ type NavGroup = {
   label: string;
   href?: string;
   subItems?: NavSubItem[];
-  content?: React.ReactNode;
 };
 
 const NavLink = ({
@@ -112,8 +110,6 @@ const PrivateHeader = () => {
     {
       label: "Settings",
       href: "/settings",
-      content: <BusinessSwitcher />,
-
       subItems: [
         { label: "View tax rate", href: "/taxrate" },
         { label: "Create tax rate", href: "/taxrate/create" },
@@ -168,11 +164,6 @@ const PrivateHeader = () => {
 
                   {openMenu === group.label && (
                     <div className="bg-background absolute top-full left-0 mt-2 min-w-56 rounded-lg border p-2 shadow-lg">
-                      {group.content && (
-                        <div className="mb-2 border-b pb-3">
-                          {group.content}
-                        </div>
-                      )}
                       {group.subItems.map((item) =>
                         item.onClick ?
                           <button
@@ -260,11 +251,6 @@ const PrivateHeader = () => {
 
                         {openMenu === group.label && (
                           <div className="ml-4 flex flex-col gap-2">
-                            {group.content && (
-                              <div className="mb-3 border-b pb-3">
-                                {group.content}
-                              </div>
-                            )}
                             {group.subItems.map((item) =>
                               item.onClick ?
                                 <button

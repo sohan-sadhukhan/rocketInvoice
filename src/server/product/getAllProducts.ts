@@ -17,15 +17,7 @@ export type ProductListItem = {
   createdAt: Date;
 };
 
-type ApiResponse<T> = {
-  data: T;
-  nextCursor: string | null;
-};
-
-export const getProducts = async (
-  cursor: string | null,
-): Promise<ApiResponse<ProductListItem[]>> => {
-  const limit = 10;
+export const getAllProducts = async (): Promise<ProductListItem[]> => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -37,13 +29,6 @@ export const getProducts = async (
   const currentBusiness = await getCurrentBusiness();
 
   const products = await prisma.product.findMany({
-    take: limit + 1,
-    ...(cursor && {
-      skip: 1,
-      cursor: {
-        id: cursor,
-      },
-    }),
     where: {
       deletedAt: null,
       businessId: currentBusiness?.currentBusinessId ?? "",
@@ -53,17 +38,10 @@ export const getProducts = async (
         select: { name: true },
       },
     },
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
   });
 
-  const hasNextPage = products.length > limit;
-
-  const paginatedItems = hasNextPage ? products.slice(0, limit) : products;
-
-  const nextCursor =
-    hasNextPage ? paginatedItems[paginatedItems.length - 1].id : null;
-
-  const cleanData = paginatedItems.map((product) => ({
+  return products.map((product) => ({
     id: product.id,
     name: product.name,
     description: product.description,
@@ -73,9 +51,4 @@ export const getProducts = async (
     businessName: product.business.name,
     createdAt: product.createdAt,
   }));
-
-  return {
-    data: cleanData,
-    nextCursor,
-  };
 };

@@ -4,7 +4,11 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/database/dbClient";
 import { headers } from "next/headers";
 
-export const getUserBusinesses = async (userId: string) => {
+export const getUserBusinesses = async (
+  userId: string,
+  myCursor: string | null,
+) => {
+  const limit = 15;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -14,6 +18,13 @@ export const getUserBusinesses = async (userId: string) => {
   }
 
   const businesses = await prisma.business.findMany({
+    take: limit + 1,
+    ...(myCursor && {
+      skip: 1,
+      cursor: {
+        id: myCursor,
+      },
+    }),
     where: {
       userId,
     },
@@ -32,11 +43,18 @@ export const getUserBusinesses = async (userId: string) => {
         },
       },
     },
-    take: 10,
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { id: "desc" },
   });
 
-  return businesses;
+  const hasNextPage = businesses.length > limit;
+
+  const paginatedItems = hasNextPage ? businesses.slice(0, limit) : businesses;
+
+  const nextCursor =
+    hasNextPage ? paginatedItems[paginatedItems.length - 1].id : null;
+
+  return {
+    data: paginatedItems,
+    nextCursor,
+  };
 };

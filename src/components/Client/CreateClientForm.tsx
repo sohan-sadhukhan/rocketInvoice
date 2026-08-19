@@ -14,8 +14,11 @@ import { createClient } from "@/server/client/createClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Calendar } from "../shadcnui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../shadcnui/popover";
 import {
   Select,
   SelectContent,
@@ -25,6 +28,7 @@ import {
 } from "../shadcnui/select";
 
 const CreateClientForm = () => {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const {
@@ -144,15 +148,48 @@ const CreateClientForm = () => {
           name="birthdate"
           control={control}
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Birthdate</FieldLabel>
-              <Input
-                {...field}
-                id={field.name}
-                type="date"
-                aria-invalid={fieldState.invalid}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            <Field>
+              <FieldLabel htmlFor="date">Date of birth</FieldLabel>
+
+              <Popover
+                open={open}
+                onOpenChange={setOpen}>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="secondary"
+                      id="date"
+                      className="justify-start font-normal">
+                      {field.value ?
+                        new Date(field.value).toLocaleDateString()
+                      : "Select date"}
+                    </Button>
+                  }
+                />
+
+                <PopoverContent
+                  className="w-full overflow-hidden p-0"
+                  align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ? new Date(field.value) : undefined}
+                    defaultMonth={
+                      field.value ? new Date(field.value) : undefined
+                    }
+                    captionLayout="dropdown"
+                    onSelect={(date) => {
+                      if (date) {
+                        field.onChange(date);
+                        setOpen(false);
+                      }
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
             </Field>
           )}
         />

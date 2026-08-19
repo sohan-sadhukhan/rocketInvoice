@@ -19,18 +19,20 @@ import {
 } from "@/components/shadcnui/select";
 import { Textarea } from "@/components/shadcnui/textarea";
 import { createInvoiceSchema, type CreateInvoiceInput } from "@/lib/zodSchema";
-import { getClients } from "@/server/client/getClients";
+import { getAllClients } from "@/server/client/getAllClients";
 import { createInvoice } from "@/server/invoice/createInvoice";
-import { getProducts } from "@/server/product/getProducts";
-import { getTaxRates } from "@/server/taxrate/getTaxRates";
+import { getAllProducts } from "@/server/product/getAllProducts";
+import { getAllTaxRates } from "@/server/taxrate/getAllTaxRates";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Calendar } from "../shadcnui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../shadcnui/popover";
 
-const today = new Date().toISOString().split("T")[0];
+const today = new Date();
 
 const formatAmount = (value: number) =>
   value.toLocaleString("en-US", {
@@ -39,6 +41,7 @@ const formatAmount = (value: number) =>
   });
 
 const CreateInvoiceForm = () => {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const [clients, setClients] = useState<
@@ -106,9 +109,9 @@ const CreateInvoiceForm = () => {
   useEffect(() => {
     const load = async () => {
       const [clientItems, productItems, taxRateItems] = await Promise.all([
-        getClients(),
-        getProducts(),
-        getTaxRates(),
+        getAllClients(),
+        getAllProducts(),
+        getAllTaxRates(),
       ]);
 
       setClients(
@@ -256,12 +259,41 @@ const CreateInvoiceForm = () => {
                 <FieldLabel htmlFor="invoice-date-input">
                   Invoice date
                 </FieldLabel>
-                <Input
-                  {...field}
-                  id="invoice-date-input"
-                  type="date"
-                  aria-invalid={fieldState.invalid}
-                />
+                <Popover
+                  open={open}
+                  onOpenChange={setOpen}>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        variant="secondary"
+                        id="date"
+                        className="justify-start font-normal">
+                        {field.value ?
+                          new Date(field.value).toLocaleDateString()
+                        : "Select date"}
+                      </Button>
+                    }
+                  />
+
+                  <PopoverContent
+                    className="w-full overflow-hidden p-0"
+                    align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ? new Date(field.value) : undefined}
+                      defaultMonth={
+                        field.value ? new Date(field.value) : undefined
+                      }
+                      // captionLayout="dropdown"
+                      onSelect={(date) => {
+                        if (date) {
+                          field.onChange(date);
+                          setOpen(false);
+                        }
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

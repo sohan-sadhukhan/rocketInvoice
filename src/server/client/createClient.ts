@@ -50,7 +50,7 @@ export const createClient = async (
         name: parsed.data.name,
         address: parsed.data.address,
         contactInformation: parsed.data.contactInformation,
-        gender: parsed.data.gender ?? null,
+        gender: parsed.data.gender,
         birthdate:
           parsed.data.birthdate ? new Date(parsed.data.birthdate) : null,
         businessId: business.currentBusinessId,

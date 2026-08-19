@@ -11,8 +11,8 @@ import { Input } from "@/components/shadcnui/input";
 import { Textarea } from "@/components/shadcnui/textarea";
 import { createProductSchema, type CreateProductInput } from "@/lib/zodSchema";
 import { createProduct } from "@/server/product/createProduct";
-import { getProductFamilies } from "@/server/product/getProductFamilies";
-import { getTaxRates } from "@/server/taxrate/getTaxRates";
+import { getAllProductFamilies } from "@/server/product/getAllProductFamilies";
+import { getAllTaxRates } from "@/server/taxrate/getAllTaxRates";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -52,8 +52,8 @@ const CreateProduct = () => {
   useEffect(() => {
     const loadData = async () => {
       const [nextFamilies, nextTaxRates] = await Promise.all([
-        getProductFamilies(),
-        getTaxRates(),
+        getAllProductFamilies(),
+        getAllTaxRates(),
       ]);
 
       setFamilies(nextFamilies);

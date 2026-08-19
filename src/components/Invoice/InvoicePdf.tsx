@@ -1,6 +1,8 @@
 "use client";
 
 import { InvoiceListItem } from "@/lib/types";
+import { getCurrentBusinessDetails } from "@/server/business/getCurrentBusinessDetails";
+import getInvoiceWithItem from "@/server/invoice/getInvoiceWithItem";
 import {
   Document,
   Page,
@@ -9,9 +11,14 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
+import { useState } from "react";
 import { Button } from "../shadcnui/button";
 
 type InvoicePdfProp = {
+  id: string;
+};
+
+type MyDocProp = {
   invoice: InvoiceListItem;
   currentBusiness:
     | {
@@ -343,7 +350,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const MyDoc = ({ invoice, currentBusiness }: InvoicePdfProp) => {
+const MyDoc = ({ invoice, currentBusiness }: MyDocProp) => {
   const { subtotal, totalDiscount, totalTax, grandTotal } =
     calculateInvoice(invoice);
 
@@ -525,12 +532,25 @@ const MyDoc = ({ invoice, currentBusiness }: InvoicePdfProp) => {
   );
 };
 
-export const InvoicePdf = ({ invoice, currentBusiness }: InvoicePdfProp) => {
+export const InvoicePdf = ({ id }: InvoicePdfProp) => {
+  const [loading, setLoading] = useState(Boolean);
+
   const handleDownload = async () => {
     try {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const data = await getInvoiceWithItem(id);
+      const currentBusiness = await getCurrentBusinessDetails();
+
+      if (!data) {
+        console.error("Invoice not found");
+        return;
+      }
+
       const blob = await pdf(
         <MyDoc
-          invoice={invoice}
+          invoice={data}
           currentBusiness={currentBusiness}
         />,
       ).toBlob();
@@ -541,7 +561,7 @@ export const InvoicePdf = ({ invoice, currentBusiness }: InvoicePdfProp) => {
 
       link.href = url;
 
-      link.download = `${getInvoiceNumber(invoice.id)}.pdf`;
+      link.download = `${getInvoiceNumber(data.id)}.pdf`;
 
       document.body.appendChild(link);
 
@@ -552,8 +572,16 @@ export const InvoicePdf = ({ invoice, currentBusiness }: InvoicePdfProp) => {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to generate invoice PDF:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return <Button onClick={handleDownload}>Download PDF</Button>;
+  return (
+    <Button
+      onClick={handleDownload}
+      className={loading ? "animate-pulse" : ""}>
+      {loading ? "Downloading..." : "Download PDF"}
+    </Button>
+  );
 };

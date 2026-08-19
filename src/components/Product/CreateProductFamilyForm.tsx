@@ -44,7 +44,6 @@ const CreateProductFamilyForm = () => {
 
     if (result.success) {
       toast.success("Product family created successfully");
-      router.push("/products/create" as never);
       return;
     }
 

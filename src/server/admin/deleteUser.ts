@@ -38,7 +38,7 @@ export const deleteUser = async (userId: string) => {
 
     return {
       success: true,
-      message: "success",
+      message: "User deleted successfully",
     };
   } catch (error) {
     return {

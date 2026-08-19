@@ -22,10 +22,10 @@ export type InvoiceListItem = {
   createdAt: Date;
   invoiceItems: {
     id: string;
+    deletedAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
     name: string;
-    deletedAt: Date | null;
     invoiceId: string;
     productId: string | null;
     quantity: number;

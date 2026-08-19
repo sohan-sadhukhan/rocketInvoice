@@ -6,18 +6,14 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCurrentBusiness } from "../business/getCurrentBusiness";
 
-export type ProductFamilyOption = {
-  data: {
-    id: string;
-    name: string;
-  }[];
-  nextCursor: string | null;
+type ProductFamilyOption = {
+  id: string;
+  name: string;
 };
 
-export const getProductFamilies = async (
-  myCursor: string | null,
-): Promise<ProductFamilyOption> => {
-  const limit = 12;
+export const getAllProductFamilies = async (): Promise<
+  ProductFamilyOption[]
+> => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -29,33 +25,16 @@ export const getProductFamilies = async (
   const currentBusiness = await getCurrentBusiness();
 
   const families = await prisma.productFamily.findMany({
-    take: limit + 1,
-    ...(myCursor && {
-      skip: 1,
-      cursor: {
-        id: myCursor,
-      },
-    }),
     where: {
       deletedAt: null,
       businessId: currentBusiness?.currentBusinessId ?? "",
     },
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     select: {
       id: true,
       name: true,
     },
   });
 
-  const hasNextPage = families.length > limit;
-
-  const paginatedItems = hasNextPage ? families.slice(0, limit) : families;
-
-  const nextCursor =
-    hasNextPage ? paginatedItems[paginatedItems.length - 1].id : null;
-
-  return {
-    data: paginatedItems,
-    nextCursor,
-  };
+  return families;
 };
