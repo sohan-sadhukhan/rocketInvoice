@@ -1,3 +1,4 @@
+import { Gender } from "@generated/prisma/enums";
 import z from "zod";
 
 export const signInSchema = z.object({
@@ -89,7 +90,7 @@ export const createClientSchema = z.object({
     .string()
     .min(1, { error: "Contact information is required" })
     .max(500, { error: "Contact information must be at most 500 characters" }),
-  gender: z.string().optional(),
+  gender: z.enum(Gender).optional(),
   birthdate: z.date().optional(),
 });
 

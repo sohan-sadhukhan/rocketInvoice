@@ -67,7 +67,7 @@ export const getProducts = async (
     id: product.id,
     name: product.name,
     description: product.description,
-    taxRate: product.taxRate.toString(),
+    taxRate: product.taxRate ? product.taxRate.toString() : "",
     price: product.price.toString(),
     family: product.family,
     businessName: product.business.name,
