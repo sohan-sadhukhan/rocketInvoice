@@ -63,6 +63,7 @@ const ChangeEmailForm = ({ currentEmail }: { currentEmail: string }) => {
                 type="email"
                 autoComplete="email"
                 aria-invalid={fieldState.invalid}
+                placeholder="Enter your email"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

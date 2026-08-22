@@ -8,25 +8,20 @@ import {
   FieldLabel,
 } from "@/components/shadcnui/field";
 import { Input } from "@/components/shadcnui/input";
+import {
+  ChangePasswordFormValues,
+  changePasswordSchema,
+} from "@/lib/zodSchema";
 import { changePassword } from "@/server/user/changePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { z } from "zod";
-
-const changePasswordSchema = z.object({
-  currentPassword: z
-    .string()
-    .min(1, { message: "Current password is required" }),
-  newPassword: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-});
-
-type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
 
 const ChangePasswordForm = () => {
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const {
     handleSubmit,
     control,
@@ -67,13 +62,32 @@ const ChangePasswordForm = () => {
               <FieldLabel htmlFor="currentPassword">
                 Current password
               </FieldLabel>
-              <Input
-                {...field}
-                id="currentPassword"
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={fieldState.invalid}
-              />
+              <div className="relative">
+                <Input
+                  {...field}
+                  type={showCurrentPassword ? "text" : "password"}
+                  id="currentPassword"
+                  autoComplete="current-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your current password"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword((prev) => !prev)}
+                  className={
+                    "text-muted-foreground hover:text-foreground absolute top-2.5 right-3.5"
+                  }
+                  aria-label={
+                    showCurrentPassword ? "Hide password" : "Show password"
+                  }
+                  aria-pressed={showCurrentPassword}>
+                  {showCurrentPassword ?
+                    <EyeOffIcon className="size-4" />
+                  : <EyeIcon className="size-4" />}
+                </button>
+              </div>
+
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -85,13 +99,30 @@ const ChangePasswordForm = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="newPassword">New password</FieldLabel>
-              <Input
-                {...field}
-                id="newPassword"
-                type="password"
-                autoComplete="new-password"
-                aria-invalid={fieldState.invalid}
-              />
+              <div className="relative">
+                <Input
+                  {...field}
+                  id="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your new password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword((prev) => !prev)}
+                  className={
+                    "text-muted-foreground hover:text-foreground absolute top-2.5 right-3.5"
+                  }
+                  aria-label={
+                    showNewPassword ? "Hide password" : "Show password"
+                  }
+                  aria-pressed={showNewPassword}>
+                  {showNewPassword ?
+                    <EyeOffIcon className="size-4" />
+                  : <EyeIcon className="size-4" />}
+                </button>
+              </div>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

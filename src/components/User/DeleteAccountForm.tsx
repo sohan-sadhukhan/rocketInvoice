@@ -8,20 +8,16 @@ import {
   FieldLabel,
 } from "@/components/shadcnui/field";
 import { Input } from "@/components/shadcnui/input";
+import { DeleteAccountFormValues, deleteAccountSchema } from "@/lib/zodSchema";
 import { deleteAccount } from "@/server/user/deleteAccount";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { z } from "zod";
-
-const deleteAccountSchema = z.object({
-  password: z.string().min(1, { message: "Password is required" }),
-});
-
-type DeleteAccountFormValues = z.infer<typeof deleteAccountSchema>;
 
 const DeleteAccountForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     handleSubmit,
     control,
@@ -59,13 +55,28 @@ const DeleteAccountForm = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="deletePassword">Password</FieldLabel>
-              <Input
-                {...field}
-                id="deletePassword"
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={fieldState.invalid}
-              />
+              <div className="relative">
+                <Input
+                  {...field}
+                  id="deletePassword"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className={
+                    "text-muted-foreground hover:text-foreground absolute top-2.5 right-3.5"
+                  }
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}>
+                  {showPassword ?
+                    <EyeOffIcon className="size-4" />
+                  : <EyeIcon className="size-4" />}
+                </button>
+              </div>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

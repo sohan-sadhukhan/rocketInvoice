@@ -11,12 +11,14 @@ import { Input } from "@/components/shadcnui/input";
 import { signInSchema, type SignInInput } from "@/lib/zodSchema";
 import { signIn } from "@/server/user/signIn";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const SignInForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
@@ -64,9 +66,7 @@ const SignInForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="you@example.com"
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -77,17 +77,32 @@ const SignInForm = () => {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-              <Input
-                {...field}
-                id={field.name}
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter your password"
-              />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              <div className="relative">
+                <Input
+                  {...field}
+                  id={field.name}
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your password"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className={
+                    "text-muted-foreground hover:text-foreground absolute top-2.5 right-3.5"
+                  }
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}>
+                  {showPassword ?
+                    <EyeOffIcon className="size-4" />
+                  : <EyeIcon className="size-4" />}
+                </button>
+              </div>
             </Field>
           )}
         />
@@ -97,14 +112,12 @@ const SignInForm = () => {
         type="submit"
         className="w-full"
         disabled={isSubmitting}>
-        {isSubmitting ? (
+        {isSubmitting ?
           <>
             <Loader2Icon className="animate-spin" />
             Signing in...
           </>
-        ) : (
-          "Sign in"
-        )}
+        : "Sign in"}
       </Button>
     </form>
   );

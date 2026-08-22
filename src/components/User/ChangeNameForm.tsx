@@ -62,6 +62,7 @@ const ChangeNameForm = ({ currentName }: { currentName: string }) => {
                 id="name"
                 autoComplete="name"
                 aria-invalid={fieldState.invalid}
+                placeholder="Enter your name"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

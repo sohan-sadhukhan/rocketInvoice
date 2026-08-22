@@ -49,6 +49,23 @@ const decimalStringSchema = (label: string) =>
       { error: `Enter a valid ${label.toLowerCase()}` },
     );
 
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(1, { message: "Current password is required" }),
+  newPassword: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+});
+
+export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, { message: "Password is required" }),
+});
+
+export type DeleteAccountFormValues = z.infer<typeof deleteAccountSchema>;
+
 export const createBusinessSchema = z.object({
   name: z
     .string()
