@@ -11,7 +11,6 @@ export type TaxRateListItem = {
     id: string;
     name: string;
     percent: string;
-    businessName: string;
     createdAt: Date;
   }[];
   nextCursor: string | null;
@@ -43,11 +42,6 @@ export const getTaxRates = async (
       businessId: currentBusiness?.currentBusinessId ?? "",
     },
     orderBy: { id: "desc" },
-    include: {
-      business: {
-        select: { name: true },
-      },
-    },
   });
 
   const hasNextPage = taxRates.length > limit;
@@ -61,7 +55,6 @@ export const getTaxRates = async (
     id: taxRate.id,
     name: taxRate.name,
     percent: taxRate.percent.toString(),
-    businessName: taxRate.business.name,
     createdAt: taxRate.createdAt,
   }));
 

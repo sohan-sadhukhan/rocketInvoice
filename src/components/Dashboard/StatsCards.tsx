@@ -51,7 +51,10 @@ const StatsCards = async ({ currentBusinessId }: StatsCardsProp) => {
           <div>
             <CardTitle className="text-sm font-medium">Total revenue</CardTitle>
             <CardDescription>
-              +{Number(revenueGrowth.revenueGrowthPercentage)}% vs last month
+              {Number(revenueGrowth.revenueGrowthPercentage) < 0 ?
+                Number(revenueGrowth.revenueGrowthPercentage)
+              : `+${Number(revenueGrowth.revenueGrowthPercentage)}`}
+              % vs last month
             </CardDescription>
           </div>
           <div className="bg-primary/10 text-primary rounded-2xl p-2">

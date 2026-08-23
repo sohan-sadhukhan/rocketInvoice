@@ -39,7 +39,7 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
           <TableCell>
             <div className="space-y-2">
               <Skeleton className="h-4 w-72" />
-              <Skeleton className="h-4 w-75" />
+              <Skeleton className="h-4 w-52" />
             </div>
           </TableCell>
 
@@ -56,10 +56,6 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
           </TableCell>
 
           <TableCell>
-            <Skeleton className="h-4 w-28" />
-          </TableCell>
-
-          <TableCell>
             <Skeleton className="h-4 w-24" />
           </TableCell>
         </TableRow>
@@ -67,7 +63,6 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
     </>
   );
 };
-
 const AllProducts = ({ products, nextCursor }: AllProductsProp) => {
   const [allproducts, setAllproducts] = useState(products);
   const [cursor, setCursor] = useState(nextCursor);
@@ -158,11 +153,10 @@ const AllProducts = ({ products, nextCursor }: AllProductsProp) => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40%]">Name</TableHead>
-                  <TableHead className="w-[10%]">Family</TableHead>
+                  <TableHead className="w-[20%]">Family</TableHead>
                   <TableHead className="w-[10%]">Price</TableHead>
                   <TableHead className="w-[10%]">Tax rate</TableHead>
-                  <TableHead className="w-[15%]">Business</TableHead>
-                  <TableHead className="w-[15%]">Created</TableHead>
+                  <TableHead className="w-[20%]">Created</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -183,7 +177,6 @@ const AllProducts = ({ products, nextCursor }: AllProductsProp) => {
                     </TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>{product.taxRate}%</TableCell>
-                    <TableCell>{product.businessName}</TableCell>
                     <TableCell>
                       {format(product.createdAt, "dd MMM yyyy")}
                     </TableCell>

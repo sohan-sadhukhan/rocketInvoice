@@ -31,7 +31,6 @@ type AllTaxRateProp = {
     id: string;
     name: string;
     percent: string;
-    businessName: string;
     createdAt: Date;
   }[];
   nextCursor: string | null;
@@ -43,15 +42,11 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
       {Array.from({ length: count }).map((_, index) => (
         <TableRow key={`skeleton-${index}`}>
           <TableCell>
-            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-48 sm:w-64 md:w-72" />
           </TableCell>
 
           <TableCell>
-            <Skeleton className="h-6 w-14 rounded-full" />
-          </TableCell>
-
-          <TableCell>
-            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-4 w-12" />
           </TableCell>
 
           <TableCell>
@@ -148,10 +143,9 @@ const AllTaxRate = ({ taxRates, nextCursor }: AllTaxRateProp) => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[35%]">Name</TableHead>
-                  <TableHead className="w-[15%]">Percent</TableHead>
-                  <TableHead className="w-[30%]">Business</TableHead>
-                  <TableHead className="w-[20%]">Created</TableHead>
+                  <TableHead className="w-[50%]">Name</TableHead>
+                  <TableHead className="w-[20%]">Percent</TableHead>
+                  <TableHead className="w-[30%]">Created</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -165,7 +159,6 @@ const AllTaxRate = ({ taxRates, nextCursor }: AllTaxRateProp) => {
                     <TableCell>
                       <Badge variant="outline">{taxRate.percent}%</Badge>
                     </TableCell>
-                    <TableCell>{taxRate.businessName}</TableCell>
                     <TableCell>
                       {format(taxRate.createdAt, "dd MMM yyyy")}
                     </TableCell>

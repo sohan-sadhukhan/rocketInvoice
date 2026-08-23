@@ -41,14 +41,14 @@ const NavLink = ({
   className?: string;
 }) => {
   const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = pathname === href;
 
   return (
     <Link
       href={href as never}
       onClick={onClick}
       className={cn(
-        "hover:text-primary text-sm font-medium transition-colors",
+        "hover:text-primary flex w-full items-center rounded-md py-2.5 text-sm font-medium transition-colors",
         isActive ? "text-primary" : "text-muted-foreground",
         className,
       )}>
@@ -195,13 +195,6 @@ const PrivateHeader = () => {
             </div>
           ))}
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleSignOut}>
-            Sign out
-          </Button>
-
           <ThemeToggleButton />
         </nav>
 
@@ -223,73 +216,81 @@ const PrivateHeader = () => {
             />
             <SheetContent
               side="right"
-              className="w-full max-w-xs">
-              <SheetHeader>
-                <SheetTitle>Dashboard</SheetTitle>
+              className="w-full max-w-sm p-0">
+              <SheetHeader className="border-b px-4 py-5">
+                <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
 
               <nav
-                className="flex flex-col gap-4 px-4"
+                className="flex h-full flex-col px-4 py-5"
                 aria-label="Mobile dashboard navigation">
-                {privateNavGroups.map((group) => (
-                  <div
-                    key={group.label}
-                    className="space-y-2">
-                    {group.subItems ?
-                      <>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setOpenMenu((current) =>
-                              current === group.label ? null : group.label,
-                            )
-                          }
-                          className="hover:text-primary text-muted-foreground flex items-center gap-1 text-base font-medium transition-colors">
-                          {group.label}
-                          <ChevronDownIcon className="size-4" />
-                        </button>
+                <div className="flex flex-1 flex-col gap-1">
+                  {privateNavGroups.map((group) => {
+                    const isOpen = openMenu === group.label;
 
-                        {openMenu === group.label && (
-                          <div className="ml-4 flex flex-col gap-2">
-                            {group.subItems.map((item) =>
-                              item.onClick ?
-                                <button
-                                  key={item.label}
-                                  type="button"
-                                  onClick={() => {
-                                    item.onClick?.();
-                                    closeMenu();
-                                  }}
-                                  className="hover:text-primary text-muted-foreground text-left text-sm font-medium transition-colors">
-                                  {item.label}
-                                </button>
-                              : <NavLink
-                                  key={item.label}
-                                  href={item.href ?? group.href ?? "/dashboard"}
-                                  label={item.label}
-                                  onClick={closeMenu}
-                                  className="text-base"
-                                />,
+                    return (
+                      <div key={group.label}>
+                        {group.subItems ?
+                          <>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setOpenMenu((current) =>
+                                  current === group.label ? null : group.label,
+                                )
+                              }
+                              aria-expanded={isOpen}
+                              aria-controls={`mobile-menu-${group.label}`}
+                              className="text-muted-foreground hover:text-foreground hover:bg-muted flex w-full items-center justify-between rounded-md py-2.5 text-left text-base font-medium transition-colors">
+                              <span>{group.label}</span>
+
+                              <ChevronDownIcon
+                                className={`size-4 shrink-0 transition-transform duration-200 ${
+                                  isOpen ? "rotate-180" : ""
+                                }`}
+                              />
+                            </button>
+
+                            {isOpen && (
+                              <div
+                                id={`mobile-menu-${group.label}`}
+                                className="mt-1 ml-3 flex flex-col gap-1 border-l pl-3">
+                                {group.subItems.map((item) =>
+                                  item.onClick ?
+                                    <button
+                                      key={item.label}
+                                      type="button"
+                                      onClick={() => {
+                                        item.onClick?.();
+                                        closeMenu();
+                                      }}
+                                      className="text-muted-foreground hover:text-foreground hover:bg-muted w-full rounded-md px-3 py-2 text-left text-sm font-medium transition-colors">
+                                      {item.label}
+                                    </button>
+                                  : <NavLink
+                                      key={item.label}
+                                      href={
+                                        item.href ?? group.href ?? "/dashboard"
+                                      }
+                                      label={item.label}
+                                      onClick={closeMenu}
+                                      className="text-sm"
+                                    />,
+                                )}
+                              </div>
                             )}
-                          </div>
-                        )}
-                      </>
-                    : <NavLink
-                        href={group.href ?? "/dashboard"}
-                        label={group.label}
-                        onClick={closeMenu}
-                        className="text-base"
-                      />
-                    }
-                  </div>
-                ))}
-
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={handleSignOut}>
-                  Sign out
-                </Button>
+                          </>
+                        : <NavLink
+                            href={group.href ?? "/dashboard"}
+                            label={group.label}
+                            onClick={closeMenu}
+                            className="text-sm"
+                          />
+                        }
+                      </div>
+                    );
+                  })}
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

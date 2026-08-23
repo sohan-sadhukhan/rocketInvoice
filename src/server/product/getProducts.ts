@@ -13,7 +13,6 @@ export type ProductListItem = {
   taxRate: string;
   price: string;
   family: string;
-  businessName: string;
   createdAt: Date;
 };
 
@@ -25,7 +24,7 @@ type ApiResponse<T> = {
 export const getProducts = async (
   cursor: string | null,
 ): Promise<ApiResponse<ProductListItem[]>> => {
-  const limit = 10;
+  const limit = 15;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -48,11 +47,7 @@ export const getProducts = async (
       deletedAt: null,
       businessId: currentBusiness?.currentBusinessId ?? "",
     },
-    include: {
-      business: {
-        select: { name: true },
-      },
-    },
+
     orderBy: { id: "desc" },
   });
 
@@ -70,7 +65,6 @@ export const getProducts = async (
     taxRate: product.taxRate ? product.taxRate.toString() : "",
     price: product.price.toString(),
     family: product.family,
-    businessName: product.business.name,
     createdAt: product.createdAt,
   }));
 
