@@ -29,6 +29,7 @@ import {
 type AllProductsProp = {
   products: ProductListItem[];
   nextCursor: string | null;
+  productCounts: number;
 };
 
 const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
@@ -63,7 +64,11 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
     </>
   );
 };
-const AllProducts = ({ products, nextCursor }: AllProductsProp) => {
+const AllProducts = ({
+  products,
+  nextCursor,
+  productCounts,
+}: AllProductsProp) => {
   const [allproducts, setAllproducts] = useState(products);
   const [cursor, setCursor] = useState(nextCursor);
   const [loading, setLoading] = useState(false);
@@ -115,7 +120,7 @@ const AllProducts = ({ products, nextCursor }: AllProductsProp) => {
         </Button>
       </div>
 
-      {allproducts.length === 0 ?
+      {productCounts === 0 ?
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -144,8 +149,7 @@ const AllProducts = ({ products, nextCursor }: AllProductsProp) => {
           <CardHeader>
             <CardTitle>Your products</CardTitle>
             <CardDescription>
-              {allproducts.length} product{allproducts.length === 1 ? "" : "s"}{" "}
-              in catalog
+              {productCounts} product{productCounts === 1 ? "" : "s"} in catalog
             </CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">

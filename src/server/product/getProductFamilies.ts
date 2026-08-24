@@ -17,7 +17,7 @@ export type ProductFamilyOption = {
 export const getProductFamilies = async (
   myCursor: string | null,
 ): Promise<ProductFamilyOption> => {
-  const limit = 12;
+  const limit = 15;
   const session = await auth.api.getSession({
     headers: await headers(),
   });

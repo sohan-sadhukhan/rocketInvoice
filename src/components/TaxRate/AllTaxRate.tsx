@@ -34,6 +34,7 @@ type AllTaxRateProp = {
     createdAt: Date;
   }[];
   nextCursor: string | null;
+  taxRateCounts: number;
 };
 
 const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
@@ -58,11 +59,15 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
   );
 };
 
-const AllTaxRate = ({ taxRates, nextCursor }: AllTaxRateProp) => {
+const AllTaxRate = ({
+  taxRates,
+  nextCursor,
+  taxRateCounts,
+}: AllTaxRateProp) => {
   const [alltaxRates, setAlltaxRates] = useState(taxRates);
   const [cursor, setCursor] = useState(nextCursor);
   const [loading, setLoading] = useState(false);
-  const { ref, inView, entry } = useInView({
+  const { ref } = useInView({
     threshold: 0,
     onChange: (inView) => {
       if (inView) {
@@ -111,7 +116,7 @@ const AllTaxRate = ({ taxRates, nextCursor }: AllTaxRateProp) => {
           </Link>
         </Button>
       </div>
-      {alltaxRates.length === 0 ?
+      {taxRateCounts === 0 ?
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -135,8 +140,7 @@ const AllTaxRate = ({ taxRates, nextCursor }: AllTaxRateProp) => {
           <CardHeader>
             <CardTitle>Your tax rates</CardTitle>
             <CardDescription>
-              {alltaxRates.length} tax rate{taxRates.length === 1 ? "" : "s"}{" "}
-              saved
+              {taxRateCounts} tax rate{taxRateCounts === 1 ? "" : "s"} saved
             </CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">

@@ -41,6 +41,7 @@ type AllBusinessProp = {
   businesses: Business[];
   nextCursor: string | null;
   currentBusinessId: string | null | undefined;
+  businessCounts: number;
 };
 
 const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
@@ -81,6 +82,7 @@ const AllBusiness = ({
   businesses,
   nextCursor,
   currentBusinessId: initialCurrentBusinessId,
+  businessCounts,
 }: AllBusinessProp) => {
   const [allbusinesses, setAllbusinesses] = useState(businesses);
   const [cursor, setCursor] = useState(nextCursor);
@@ -172,7 +174,7 @@ const AllBusiness = ({
         </div>
       )}
 
-      {allbusinesses.length === 0 ?
+      {businessCounts === 0 ?
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -201,8 +203,8 @@ const AllBusiness = ({
                 <CardTitle>Your businesses</CardTitle>
 
                 <CardDescription>
-                  {allbusinesses.length} business
-                  {allbusinesses.length === 1 ? "" : "es"} registered
+                  {businessCounts} business
+                  {businessCounts === 1 ? "" : "es"} registered
                 </CardDescription>
               </div>
 

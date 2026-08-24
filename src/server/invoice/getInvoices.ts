@@ -22,7 +22,7 @@ type InvoiceLis = {
 export const getInvoices = async (
   cursor: string | null,
 ): Promise<InvoiceLis> => {
-  const limit = 10;
+  const limit = 15;
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     redirect("/auth/signin");

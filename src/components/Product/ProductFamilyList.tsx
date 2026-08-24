@@ -30,6 +30,7 @@ type ProductFamilyListProp = {
     name: string;
   }[];
   nextCursor: string | null;
+  productFamilyCounts: number;
 };
 
 const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
@@ -46,7 +47,11 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
   );
 };
 
-const ProductFamilyList = ({ families, nextCursor }: ProductFamilyListProp) => {
+const ProductFamilyList = ({
+  families,
+  nextCursor,
+  productFamilyCounts,
+}: ProductFamilyListProp) => {
   const [allProductFamilies, setAllProductFamilies] = useState(families);
   const [cursor, setCursor] = useState(nextCursor);
   const [loading, setLoading] = useState(false);
@@ -100,7 +105,7 @@ const ProductFamilyList = ({ families, nextCursor }: ProductFamilyListProp) => {
         </Button>
       </div>
 
-      {allProductFamilies.length === 0 ?
+      {productFamilyCounts === 0 ?
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -122,8 +127,8 @@ const ProductFamilyList = ({ families, nextCursor }: ProductFamilyListProp) => {
           <CardHeader>
             <CardTitle>Your product families</CardTitle>
             <CardDescription>
-              {allProductFamilies.length} family
-              {allProductFamilies.length === 1 ? "" : "ies"} in your catalog.
+              {productFamilyCounts} family
+              {productFamilyCounts === 1 ? "" : "ies"} in your catalog.
             </CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">

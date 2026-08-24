@@ -28,6 +28,7 @@ import {
 type AllClientsProps = {
   clients: ClientListItem;
   nextCursor: string | null;
+  clientCounts: number;
 };
 
 const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
@@ -64,11 +65,11 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
   );
 };
 
-const AllClints = ({ clients, nextCursor }: AllClientsProps) => {
+const AllClints = ({ clients, nextCursor, clientCounts }: AllClientsProps) => {
   const [allClients, setAllClients] = useState(clients);
   const [cursor, setCursor] = useState(nextCursor);
   const [loading, setLoading] = useState(false);
-  const { ref, inView, entry } = useInView({
+  const { ref } = useInView({
     threshold: 0,
     onChange: (inView) => {
       if (inView) {
@@ -96,7 +97,6 @@ const AllClints = ({ clients, nextCursor }: AllClientsProps) => {
       setLoading(false);
     }
   };
-  console.log(cursor);
 
   return (
     <>
@@ -139,7 +139,7 @@ const AllClints = ({ clients, nextCursor }: AllClientsProps) => {
           <CardHeader>
             <CardTitle>Your clients</CardTitle>
             <CardDescription>
-              {allClients.length} client{allClients.length === 1 ? "" : "s"}
+              {clientCounts} client{clientCounts === 1 ? "" : "s"}
             </CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">

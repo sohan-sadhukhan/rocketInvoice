@@ -21,7 +21,7 @@ export type BusinessListItem = {
 export const getBusinesses = async (
   cursor: string | null,
 ): Promise<BusinessListItem> => {
-  const limit = 10;
+  const limit = 15;
   const session = await auth.api.getSession({
     headers: await headers(),
   });

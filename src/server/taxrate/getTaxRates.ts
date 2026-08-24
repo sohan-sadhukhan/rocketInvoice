@@ -19,7 +19,7 @@ export type TaxRateListItem = {
 export const getTaxRates = async (
   cursor: string | null,
 ): Promise<TaxRateListItem> => {
-  const limit = 10;
+  const limit = 15;
   const session = await auth.api.getSession({
     headers: await headers(),
   });

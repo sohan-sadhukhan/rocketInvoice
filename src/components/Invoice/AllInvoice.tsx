@@ -38,6 +38,7 @@ type AllInvoiceProp = {
     createdAt: Date;
   }[];
   nextCursor: string | null;
+  invoiceCounts: number;
 };
 
 const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
@@ -81,7 +82,11 @@ const TableSkeletonRows = ({ count = 4 }: { count?: number }) => {
   );
 };
 
-const AllInvoice = ({ invoices, nextCursor }: AllInvoiceProp) => {
+const AllInvoice = ({
+  invoices,
+  nextCursor,
+  invoiceCounts,
+}: AllInvoiceProp) => {
   const [allinvoices, setAllinvoices] = useState(invoices);
   const [cursor, setCursor] = useState(nextCursor);
   const [loading, setLoading] = useState(false);
@@ -132,7 +137,7 @@ const AllInvoice = ({ invoices, nextCursor }: AllInvoiceProp) => {
           </Link>
         </Button>
       </div>
-      {allinvoices.length === 0 ?
+      {invoiceCounts === 0 ?
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -154,8 +159,7 @@ const AllInvoice = ({ invoices, nextCursor }: AllInvoiceProp) => {
           <CardHeader>
             <CardTitle>Your invoices</CardTitle>
             <CardDescription>
-              {allinvoices.length} invoice{allinvoices.length === 1 ? "" : "s"}{" "}
-              created.
+              {invoiceCounts} invoice{invoiceCounts === 1 ? "" : "s"} created.
             </CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">
