@@ -157,7 +157,9 @@ const AllTaxRate = ({
                   <TableRow key={taxRate.id}>
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium">{taxRate.name}</p>
+                        <p className="max-w-xs truncate font-medium">
+                          {taxRate.name}
+                        </p>
                       </div>
                     </TableCell>
                     <TableCell>

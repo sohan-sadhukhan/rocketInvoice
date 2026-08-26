@@ -1,3 +1,4 @@
+import GetStarted from "@/components/GetStarted";
 import { Button } from "@/components/shadcnui/button";
 import {
   Card,
@@ -54,9 +55,7 @@ const HomePage = () => {
           and growing teams.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Button>
-            <Link href="/auth/signup">Get started</Link>
-          </Button>
+          <GetStarted />
           <Button variant="outline">
             <Link href="/about">Learn more</Link>
           </Button>

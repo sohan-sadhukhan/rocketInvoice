@@ -249,7 +249,9 @@ const AllBusiness = ({
                       className={isCurrent ? "bg-muted/40" : undefined}>
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
-                          {business.name}
+                          <span className="max-w-xs truncate">
+                            {business.name}
+                          </span>
 
                           {isCurrent && (
                             <Badge

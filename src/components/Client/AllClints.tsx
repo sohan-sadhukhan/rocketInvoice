@@ -162,7 +162,9 @@ const AllClints = ({ clients, nextCursor, clientCounts }: AllClientsProps) => {
                       {c.name}
                     </TableCell>
 
-                    <TableCell className="truncate">{c.address}</TableCell>
+                    <TableCell className="max-w-xs truncate">
+                      {c.address}
+                    </TableCell>
 
                     <TableCell className="truncate">
                       {c.contactInformation}

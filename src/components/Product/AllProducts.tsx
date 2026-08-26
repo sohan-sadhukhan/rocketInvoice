@@ -168,7 +168,9 @@ const AllProducts = ({
                   <TableRow key={product.id}>
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium">{product.name}</p>
+                        <p className="max-w-xs truncate font-medium">
+                          {product.name}
+                        </p>
                         {product.description && (
                           <p className="text-muted-foreground max-w-xs truncate text-xs">
                             {product.description}
