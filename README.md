@@ -15,11 +15,11 @@ RocketInvoice is an invoice management application for creating and managing inv
 
 ## Preview
 
-![RocketInvoice Dashboard](img2.png)
+![RocketInvoice Dashboard](/public/preview2.png)
 
-![RocketInvoice Invoice](img3.png)
+![RocketInvoice Invoice](/public/preview3.png)
 
-![RocketInvoice Home](img1.png)
+![RocketInvoice Home](/public/preview1.png)
 
 ## Tech Stack
 
