@@ -29,7 +29,7 @@ const getMonthlyInvoicesStatus = async (currentBusinessId: string) => {
 
     return {
       status,
-      amount: Number(item?._sum.total ?? 0),
+      amount: Number(item?._sum.total?.toFixed(2) ?? 0),
     };
   });
 };

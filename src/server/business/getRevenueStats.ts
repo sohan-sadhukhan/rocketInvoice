@@ -49,7 +49,7 @@ const getRevenueStats = async (currentBusinessId: string) => {
     );
 
   return {
-    revenue: currentRevenue,
+    revenue: currentRevenue.toFixed(2),
     revenueGrowthPercentage: revenueGrowthPercentage.toFixed(1),
   };
 };

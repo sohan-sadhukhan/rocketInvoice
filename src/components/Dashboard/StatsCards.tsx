@@ -28,7 +28,12 @@ const StatsCards = async ({ currentBusinessId }: StatsCardsProp) => {
           <div>
             <CardTitle className="text-sm font-medium">New customers</CardTitle>
             <CardDescription>
-              +{customersNumber.customerPercent}% vs last month
+              {Number(
+                customersNumber.customerPercent < 0 ?
+                  Number(customersNumber.customerPercent)
+                : `+${Number(customersNumber.customerPercent)}`,
+              )}
+              % vs last month
             </CardDescription>
           </div>
           <div className="bg-primary/10 text-primary rounded-2xl p-2">
@@ -63,9 +68,7 @@ const StatsCards = async ({ currentBusinessId }: StatsCardsProp) => {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
-            <p className="text-2xl font-semibold">
-              {Number(revenueGrowth.revenue)}
-            </p>
+            <p className="text-2xl font-semibold">{revenueGrowth.revenue}</p>
             <div className="flex items-center gap-1 text-sm font-medium text-emerald-600">
               <ArrowUpRight className="size-4" />
               <span>Stable</span>
@@ -81,7 +84,12 @@ const StatsCards = async ({ currentBusinessId }: StatsCardsProp) => {
               Total Invoices
             </CardTitle>
             <CardDescription>
-              +{Number(monthlyInvoices.growthPercent)}% vs last month
+              {Number(
+                monthlyInvoices.growthPercent < 0 ?
+                  Number(monthlyInvoices.growthPercent)
+                : `+${Number(monthlyInvoices.growthPercent)}`,
+              )}
+              % vs last month
             </CardDescription>
           </div>
           <div className="bg-primary/10 text-primary rounded-2xl p-2">
