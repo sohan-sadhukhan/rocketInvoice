@@ -1,14 +1,11 @@
 import { PrismaClient } from "@generated/prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { serverEnv } from "../env/serverEnv";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-const adapter = new PrismaLibSql({
-  url: serverEnv.DATABASE_URL,
-});
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL });
 
 const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
