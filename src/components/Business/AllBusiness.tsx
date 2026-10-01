@@ -161,7 +161,9 @@ const AllBusiness = ({
         </div>
 
         <Button>
-          <Link href="/business/create">
+          <Link
+            href="/business/create"
+            className="flex items-center justify-center gap-2">
             <PlusIcon />
             Add business
           </Link>
@@ -189,7 +191,9 @@ const AllBusiness = ({
 
           <CardContent>
             <Button>
-              <Link href="/business/create">
+              <Link
+                href="/business/create"
+                className={"flex items-center justify-center gap-2"}>
                 <PlusIcon />
                 Create business
               </Link>

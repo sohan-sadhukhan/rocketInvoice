@@ -46,7 +46,7 @@ export const createProductFamily = async (
   if (!business?.currentBusinessId) {
     return {
       success: false,
-      error: "Selected business not found or you don't have access.",
+      error: "You must select a business to create a product family.",
     };
   }
 

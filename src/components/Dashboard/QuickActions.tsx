@@ -71,7 +71,7 @@ const QuickActions = () => {
           Quick actions
         </h2>
 
-        <div className="border-primary/15 flex items-center justify-between rounded-full border px-1 py-0.5">
+        <div className="grid grid-cols-3 gap-2">
           {actions.map((action) => {
             const Icon = action.icon;
 
@@ -79,13 +79,13 @@ const QuickActions = () => {
               <Link
                 key={action.title}
                 href={action.href as never}
-                className="">
-                <div className="flex items-start justify-between">
-                  <div className="bg-primary/10 text-primary my-1 flex gap-2 rounded-2xl px-2 py-2 text-xs">
-                    <Icon className="size-3" />
-                    <h3 className="font-medium">{action.title}</h3>
-                  </div>
-                </div>
+                className="bg-card/70 hover:bg-muted/60 active:bg-muted flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-2xl border px-2 py-3 text-center shadow-sm transition-colors">
+                <span className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full">
+                  <Icon className="size-4" />
+                </span>
+                <span className="w-full truncate text-xs font-medium">
+                  {action.title}
+                </span>
               </Link>
             );
           })}

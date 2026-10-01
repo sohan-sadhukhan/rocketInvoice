@@ -187,7 +187,7 @@ export const createProductSchema = z.object({
     .string()
     .max(1000, { error: "Description must be at most 1000 characters" })
     .optional(),
-  taxRateId: z.string(),
+  taxRateId: z.string().min(1, { error: "Tax rate is required" }),
   price: decimalStringSchema("Price"),
   familyId: z.string().min(1, { error: "Family is required" }),
 });

@@ -133,12 +133,19 @@ const AllProducts = ({
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Button>
-              <Link href={"/business/create"}>Create business</Link>
+              <Link
+                href={"/business/create"}
+                className={"flex items-center justify-center gap-2"}>
+                {" "}
+                <PlusIcon /> Create business
+              </Link>
             </Button>
 
             <Button>
               {" "}
-              <Link href={"/products/create"}>
+              <Link
+                href={"/products/create"}
+                className={"flex items-center justify-center gap-2"}>
                 <PlusIcon />
                 Create product
               </Link>

@@ -129,7 +129,9 @@ const AllTaxRate = ({
           </CardHeader>
           <CardContent>
             <Button>
-              <Link href={"/taxrate/create" as never}>
+              <Link
+                href={"/taxrate/create" as never}
+                className="flex items-center justify-center gap-2">
                 <PlusIcon />
                 Create tax rate
               </Link>

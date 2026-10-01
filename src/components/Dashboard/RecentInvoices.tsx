@@ -33,70 +33,81 @@ const RecentInvoices = async ({ currentBusinessId }: RecentInvoicesProp) => {
         </p>
       </div>
 
-      {/* Mobile Cards */}
-      <div className="space-y-3 md:hidden">
-        {invoices.map((invoice, index) => (
-          <div
-            key={index}
-            className="bg-background/40 rounded-2xl border p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <Badge className={statusStyles[invoice.status]}>
-                {invoice.status}
-              </Badge>
-
-              <span className="font-semibold">{invoice.ammount}</span>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Client</span>
-                <span className="font-medium">{invoice.clientName}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Date</span>
-                <span>{format(invoice.createdAt, "dd MMM yyyy")}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Desktop Table */}
-      <div className="hidden md:block">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Client</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
+      {invoices.length === 0 ?
+        <div className="border-muted/50 flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed p-6 text-center">
+          <p className="text-muted-foreground">
+            No recent invoices to display.
+          </p>
+        </div>
+      : <>
+          {/* Mobile Cards */}
+          <div className="space-y-3 md:hidden">
             {invoices.map((invoice, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Badge className={statusStyles[invoice.status]}>
+              <div
+                key={index}
+                className="bg-background/40 rounded-2xl border p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <Badge
+                    className={`${statusStyles[invoice.status]} capitalize`}>
                     {invoice.status}
                   </Badge>
-                </TableCell>
 
-                <TableCell>
-                  {format(invoice.createdAt, "dd MMM yyyy")}
-                </TableCell>
+                  <span className="font-semibold">{invoice.ammount}</span>
+                </div>
 
-                <TableCell>{invoice.clientName}</TableCell>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Client</span>
+                    <span className="font-medium">{invoice.clientName}</span>
+                  </div>
 
-                <TableCell className="text-right font-medium">
-                  {invoice.ammount}
-                </TableCell>
-              </TableRow>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Date</span>
+                    <span>{format(invoice.createdAt, "dd MMM yyyy")}</span>
+                  </div>
+                </div>
+              </div>
             ))}
-          </TableBody>
-        </Table>
-      </div>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Client</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {invoices.map((invoice, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Badge
+                        className={`${statusStyles[invoice.status]} capitalize`}>
+                        {invoice.status}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>
+                      {format(invoice.createdAt, "dd MMM yyyy")}
+                    </TableCell>
+
+                    <TableCell>{invoice.clientName}</TableCell>
+
+                    <TableCell className="text-right font-medium">
+                      {invoice.ammount}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
+      }
     </div>
   );
 };

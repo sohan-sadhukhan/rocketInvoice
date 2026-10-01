@@ -117,7 +117,9 @@ const ProductFamilyList = ({
           </CardHeader>
           <CardContent>
             <Button>
-              <Link href={"/products/family/create" as never}>
+              <Link
+                href={"/products/family/create" as never}
+                className={"flex items-center justify-center gap-2"}>
                 <PlusIcon /> Create family
               </Link>
             </Button>
