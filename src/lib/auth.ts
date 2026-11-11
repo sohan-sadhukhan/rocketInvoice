@@ -21,7 +21,7 @@ export const auth = betterAuth({
   secret: serverEnv.BETTER_AUTH_SECRET,
   baseURL: serverEnv.BETTER_AUTH_URL,
   database: prismaAdapter(prisma, {
-    provider: "sqlite", // or "mysql", "postgresql", ...etc
+    provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
 
   // rateLimit: {
