@@ -9,15 +9,7 @@ import prisma from "./database/dbClient";
 import { serverEnv } from "./env/serverEnv";
 
 export const auth = betterAuth({
-  trustedOrigins: [
-    "myapp://",
-    "myapp://*",
-
-    // Expo development
-    ...(process.env.NODE_ENV === "development" ?
-      ["exp://", "exp://**", "exp://192.168.*.*:*/**"]
-    : []),
-  ],
+  trustedOrigins: ["myapp://"],
   secret: serverEnv.BETTER_AUTH_SECRET,
   baseURL: serverEnv.BETTER_AUTH_URL,
   database: prismaAdapter(prisma, {
