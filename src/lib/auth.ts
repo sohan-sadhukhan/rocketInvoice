@@ -1,3 +1,4 @@
+import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
@@ -8,28 +9,37 @@ import prisma from "./database/dbClient";
 import { serverEnv } from "./env/serverEnv";
 
 export const auth = betterAuth({
+  trustedOrigins: [
+    "myapp://",
+    "myapp://*",
+
+    // Expo development
+    ...(process.env.NODE_ENV === "development" ?
+      ["exp://", "exp://**", "exp://192.168.*.*:*/**"]
+    : []),
+  ],
   secret: serverEnv.BETTER_AUTH_SECRET,
   baseURL: serverEnv.BETTER_AUTH_URL,
   database: prismaAdapter(prisma, {
     provider: "sqlite", // or "mysql", "postgresql", ...etc
   }),
 
-  rateLimit: {
-    enabled: true,
-    window: 120, // time window in seconds
-    max: 10, // max requests in the window
-    customRules: {
-      "/sign-in/email": {
-        window: 60,
-        max: 2,
-      },
-      "/sign-up/email": {
-        window: 60,
-        max: 1,
-      },
-    },
-    storage: "database",
-  },
+  // rateLimit: {
+  //   enabled: true,
+  //   window: 120, // time window in seconds
+  //   max: 10, // max requests in the window
+  //   customRules: {
+  //     "/sign-in/email": {
+  //       window: 60,
+  //       max: 2,
+  //     },
+  //     "/sign-up/email": {
+  //       window: 60,
+  //       max: 1,
+  //     },
+  //   },
+  //   storage: "database",
+  // },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
@@ -48,6 +58,7 @@ export const auth = betterAuth({
       defaultRole: "USER",
       roles: { ADMIN: superAdmin, USER: user },
     }),
+    expo(),
   ],
 
   user: {
